@@ -1,0 +1,501 @@
+.virtual-doctor-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.5rem;
+  background-color: #f8fafc;
+  gap: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.virtual-doctor-container.emergency-mode {
+  background-color: #fff5f5;
+  border: 2px solid #ef4444;
+}
+
+.doctor-layout {
+  display: flex;
+  flex: 1;
+  gap: 2rem;
+  min-height: 0;
+}
+
+.doctor-video-panel {
+  flex: 1;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  max-width: 450px;
+  background: linear-gradient(145deg, #ffffff, #f1f5f9);
+}
+
+.avatar-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+}
+
+.doctor-avatar {
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #3b82f6;
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+  animation: breathe 4s infinite ease-in-out;
+}
+
+@keyframes breathe {
+
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+  }
+
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.4);
+  }
+}
+
+.doctor-info-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.5rem;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
+  color: white;
+}
+
+.doctor-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.doctor-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  opacity: 0.9;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #22c55e;
+}
+
+.audio-control-btn {
+  margin-top: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.audio-control-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+
+.conversation-panel {
+  flex: 1.5;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.message-bubble {
+  max-width: 80%;
+  padding: 1rem 1.25rem;
+  border-radius: 18px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.message-bubble.doctor {
+  align-self: flex-start;
+  background: #f1f5f9;
+  color: #1e293b;
+  border-bottom-left-radius: 4px;
+}
+
+.message-bubble.user {
+  align-self: flex-end;
+  background: #3b82f6;
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.message-bubble.emergency {
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  color: #991b1b;
+  width: 100%;
+  max-width: 100%;
+}
+
+.chat-input-area {
+  padding: 1.5rem;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 0.875rem 1.25rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  outline: none;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.chat-input:focus {
+  border-color: #3b82f6;
+}
+
+.icon-button {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.icon-button:hover {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.icon-button.primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.icon-button.primary:hover {
+  background: #2563eb;
+}
+
+.icon-button.recording {
+  background: #fee2e2 !important;
+  color: #ef4444 !important;
+  animation: voice-pulse 1.5s infinite;
+}
+
+@keyframes voice-pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.emergency-alert-banner {
+  background: #ef4444;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  animation: shake 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(5px);
+  }
+}
+
+.summary-download-card {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.summary-info h3 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.1rem;
+}
+
+.summary-info p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.download-btn {
+  padding: 0.75rem 1.25rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.download-btn:hover {
+  background: #2563eb;
+}
+
+.disclaimer-text {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+/* Response Text Layout */
+.triage-response {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.triage-response h4 {
+  margin: 0.5rem 0 0.25rem 0;
+  color: #1e293b;
+}
+
+.triage-response ul {
+  padding-left: 1.25rem;
+  margin: 0.25rem 0;
+}
+
+.triage-response li {
+  margin-bottom: 0.25rem;
+}
+
+.lang-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  color: white;
+  font-weight: 600;
+}
+
+.emergency-steps-card {
+  background: #fff5f5;
+  border: 1px solid #fee2e2;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.emergency-steps-card h4 {
+  color: #b91c1c;
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.emergency-steps-card ol {
+  padding-left: 1.5rem;
+  color: #7f1d1d;
+}
+
+.emergency-steps-card li {
+  margin-bottom: 0.5rem;
+}
+
+.location-prompt {
+  background: white;
+  border: 1px dashed #3b82f6;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  animation: slide-up 0.3s ease-out;
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.location-btn {
+  padding: 0.75rem 1.5rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.location-btn:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+/* ========================================= */
+/* Responsive Design / Media Queries         */
+/* ========================================= */
+@media screen and (max-width: 900px) {
+  .doctor-layout {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .doctor-video-panel {
+    max-width: 100%;
+    /* Keep the video panel a distinct size but flexible */
+    aspect-ratio: 16 / 9;
+    min-height: 250px;
+  }
+
+  .avatar-container {
+    padding: 1.5rem;
+  }
+
+  .doctor-avatar {
+    max-width: 150px;
+    /* Smaller avatar on mobile */
+  }
+
+  .conversation-panel {
+    /* Need to ensure it can scroll independently on mobile */
+    min-height: 400px;
+    flex: 1 1 auto;
+  }
+
+  .virtual-doctor-container {
+    padding: 1rem;
+    height: auto;
+    min-height: 100%;
+  }
+
+  .message-bubble {
+    max-width: 95%;
+    /* Use more space for text on mobile */
+  }
+
+  /* Make header smaller on very small screens */
+  .virtual-doctor-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .chat-input-area {
+    padding: 1rem;
+  }
+
+  .chat-input {
+    padding: 0.75rem 1rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .doctor-video-panel {
+    aspect-ratio: 1 / 1;
+    min-height: 200px;
+  }
+
+  .doctor-info-overlay {
+    padding: 1rem;
+  }
+
+  .doctor-name {
+    font-size: 1.1rem;
+  }
+
+  .chat-messages {
+    padding: 1rem;
+  }
+
+  .message-bubble {
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .icon-button {
+    width: 38px;
+    height: 38px;
+  }
+}

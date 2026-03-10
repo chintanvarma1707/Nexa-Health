@@ -1,0 +1,59 @@
+{
+  "users": [
+    {
+      "id": "1772939864627",
+      "name": "rajal gadhvi",
+      "email": "rajalgadhvi317@gmail.com",
+      "password": "$2b$10$JJ7rMORl97IbOZmhsml8PeDTCxoAg/EoFfjbXrrYrSh4uUigy9JUa",
+      "createdAt": "2026-03-08T03:17:44.627Z"
+    },
+    {
+      "id": "1772940064416",
+      "name": "Test User",
+      "email": "test_speed@example.com",
+      "password": "$2b$10$tuvJ8OVb2J2bKcRelr7kl.5CkmXmBXG0mRvxkFHJ8EUSW4a9n2Qwy",
+      "createdAt": "2026-03-08T03:21:04.416Z"
+    },
+    {
+      "id": "1772940526404",
+      "name": "Speed Test User",
+      "email": "speed_test@test.com",
+      "password": "$2b$10$JgAA/U19Nn38BH3Iw6L8oeyQQ8E1wfGHPSvouAqqRZDTuAaaK6v2a",
+      "createdAt": "2026-03-08T03:28:46.404Z"
+    },
+    {
+      "id": "1772970712443",
+      "name": "speed",
+      "email": "rixat89027@7novels.com",
+      "password": "$2b$08$XCU7Qqg2WIaizW9289Amz.Koh5rPZw9B87KjNKo.IkZaH6yhqvKBG",
+      "createdAt": "2026-03-08T11:51:52.443Z"
+    }
+  ],
+  "chatThreads": [
+    {
+      "id": "1772940640940",
+      "userId": "1772939864627",
+      "condition": "Migraine",
+      "time": "09:00 am",
+      "urgency": "High",
+      "createdAt": "2026-03-08T03:30:40.941Z"
+    },
+    {
+      "id": "1772940835534",
+      "userId": "1772939864627",
+      "condition": "Migraine Headache",
+      "time": "09:03 am",
+      "urgency": "High",
+      "createdAt": "2026-03-08T03:33:55.534Z"
+    },
+    {
+      "id": "1772970802313",
+      "userId": "1772970712443",
+      "condition": "Acute Upper Gastrointestinal Bleeding (Hematemesis)",
+      "time": "05:23 pm",
+      "urgency": "Critical",
+      "createdAt": "2026-03-08T11:53:22.314Z"
+    }
+  ],
+  "reminders": []
+}

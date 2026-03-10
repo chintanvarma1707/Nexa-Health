@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Sahaara AI - Your Intelligent Emergency Companion offering AI triage, offline emergency guides, and more." />
+  <title>Sahaara AI – Your Intelligent Emergency Companion</title>
+  <style>
+    /* Preloader CSS directly in initial HTML to ensure it shows immediately */
+    #sahaara-preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #f9fbfb;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 99999;
+      font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    .preloader-logo {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .pulse-ring {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      animation: spin-pulse 2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    }
+
+    .pulse-ring-1 {
+      border-top-color: #10b981;
+      border-right-color: #10b981;
+    }
+
+    .pulse-ring-2 {
+      border-bottom-color: #a7f3d0;
+      border-left-color: #a7f3d0;
+      animation-direction: reverse;
+      animation-duration: 3s;
+    }
+
+    .pulse-ring-3 {
+      width: 70%;
+      height: 70%;
+      border-top-color: #22c55e;
+      border-left-color: #22c55e;
+      animation-duration: 1.5s;
+    }
+
+    .preloader-heart {
+      font-size: 36px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: heartbeat 1.5s infinite;
+      filter: drop-shadow(0px 4px 10px rgba(16, 185, 129, 0.3));
+    }
+
+    .preloader-text-container {
+      text-align: center;
+    }
+
+    .preloader-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #062c26;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.5px;
+      background: linear-gradient(90deg, #062c26, #047857);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .preloader-subtitle {
+      font-size: 1.1rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .loading-dots:after {
+      content: '.';
+      animation: dots 1.5s steps(5, end) infinite;
+    }
+
+    @keyframes spin-pulse {
+      0% {
+        transform: rotate(0deg) scale(0.9);
+        opacity: 0.8;
+      }
+
+      50% {
+        transform: rotate(180deg) scale(1.1);
+        opacity: 0.4;
+      }
+
+      100% {
+        transform: rotate(360deg) scale(0.9);
+        opacity: 0.8;
+      }
+    }
+
+    @keyframes heartbeat {
+      0% {
+        transform: scale(0.95);
+      }
+
+      5% {
+        transform: scale(1.1);
+      }
+
+      39% {
+        transform: scale(0.95);
+      }
+
+      45% {
+        transform: scale(1.1);
+      }
+
+      60% {
+        transform: scale(0.95);
+      }
+
+      100% {
+        transform: scale(0.95);
+      }
+    }
+
+    @keyframes dots {
+
+      0%,
+      20% {
+        color: rgba(0, 0, 0, 0);
+        text-shadow: .25em 0 0 rgba(0, 0, 0, 0), .5em 0 0 rgba(0, 0, 0, 0);
+      }
+
+      40% {
+        color: #10b981;
+        text-shadow: .25em 0 0 rgba(0, 0, 0, 0), .5em 0 0 rgba(0, 0, 0, 0);
+      }
+
+      60% {
+        text-shadow: .25em 0 0 #10b981, .5em 0 0 rgba(0, 0, 0, 0);
+      }
+
+      80%,
+      100% {
+        text-shadow: .25em 0 0 #10b981, .5em 0 0 #10b981;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="sahaara-preloader">
+    <div class="preloader-logo">
+      <div class="pulse-ring pulse-ring-1"></div>
+      <div class="pulse-ring pulse-ring-2"></div>
+      <div class="pulse-ring pulse-ring-3"></div>
+      <div class="preloader-heart">❤</div>
+    </div>
+    <div class="preloader-text-container">
+      <h1 class="preloader-title">Sahaara AI</h1>
+      <p class="preloader-subtitle">Loading Critical Health Systems<span class="loading-dots"></span></p>
+    </div>
+  </div>
+  <div id="root" style="display: none;"></div>
+
+  <script>
+    // Artificial delay to show the heartbeat preloader
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const preloader = document.getElementById('sahaara-preloader');
+        const root = document.getElementById('root');
+        if (preloader) {
+          preloader.style.transition = 'opacity 0.5s ease';
+          preloader.style.opacity = '0';
+          setTimeout(() => {
+            preloader.remove();
+            if (root) {
+              root.style.display = 'block';
+            }
+          }, 500); // Wait for fade out
+        }
+      }, 3000); // Adjust this to keep the preloader on screen longer (3000ms = 3 seconds)
+    });
+  </script>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
+</html>

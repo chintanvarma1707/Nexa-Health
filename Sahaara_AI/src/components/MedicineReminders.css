@@ -1,0 +1,220 @@
+.reminders-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.add-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.75rem;
+  background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+}
+
+.add-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px rgba(16, 185, 129, 0.3);
+}
+
+.add-reminder-card {
+  margin-bottom: 3rem;
+  padding: 2.5rem;
+  border: 1px solid var(--color-primary-100);
+  background-color: var(--color-primary-50);
+  animation: slideUp 0.4s ease-out;
+}
+
+.add-reminder-card h3 {
+  margin-bottom: 2rem;
+  font-weight: 800;
+  color: var(--color-primary-900);
+  letter-spacing: -0.02em;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.form-group label {
+  font-weight: 700;
+  color: var(--color-primary-900);
+  font-size: 0.95rem;
+}
+
+.form-group input {
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  outline: none;
+  font-size: 1.1rem;
+  background-color: var(--color-white);
+  transition: var(--transition-fast);
+}
+
+.form-group input:focus {
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+}
+
+.recording-area {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.record-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background-color: var(--color-white);
+  color: var(--color-primary-600);
+  border: 1px solid var(--color-primary-100);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 700;
+  transition: var(--transition-smooth);
+}
+
+.record-btn:hover {
+  background-color: var(--color-primary-50);
+}
+
+.record-btn.recording {
+  background-color: var(--color-panic-500);
+  color: var(--color-white);
+  border-color: var(--color-panic-600);
+  animation: pulse 1s infinite alternate;
+}
+
+.hint {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+}
+
+.text-green {
+  color: var(--color-primary-600);
+  font-weight: 600;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.cancel-btn, .save-btn {
+  padding: 1.1rem 2rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.cancel-btn {
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.save-btn {
+  background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
+  border: none;
+  color: var(--color-white);
+  box-shadow: 0 10px 20px rgba(16, 185, 129, 0.15);
+}
+
+.save-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px rgba(16, 185, 129, 0.25);
+}
+
+.reminders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.reminder-card {
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-left: 6px solid var(--color-primary-500);
+}
+
+.reminder-info h3 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  color: var(--color-primary-900);
+}
+
+.time-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--color-primary-50);
+  color: var(--color-primary-700);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.repeat-status {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.reminder-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.icon-btn-small {
+  width: 45px;
+  height: 45px;
+  border-radius: var(--radius-md);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.play-btn {
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-700);
+}
+
+.delete-btn {
+  background-color: var(--color-panic-50);
+  color: var(--color-panic-600);
+}
+
+.icon-btn-small:hover {
+  transform: scale(1.1);
+}
