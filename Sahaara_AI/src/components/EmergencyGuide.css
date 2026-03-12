@@ -218,3 +218,84 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
+
+/* ========================================= */
+/* Responsive Design Adjustments             */
+/* ========================================= */
+@media screen and (max-width: 900px) {
+  .guide-container {
+    height: auto;
+    min-height: calc(100vh - 140px);
+  }
+
+  .guide-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .search-bar {
+    width: 100%;
+  }
+
+  .guide-layout {
+    flex-direction: column;
+    gap: 2rem;
+    overflow: visible;
+  }
+
+  .guide-list {
+    flex: none;
+    max-height: 350px;
+    padding-right: 0;
+  }
+
+  .guide-details {
+    flex: none;
+    min-height: 500px;
+    overflow: visible;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .details-content {
+    padding: 1.5rem;
+  }
+
+  .details-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .details-header h2 {
+    font-size: 1.75rem;
+  }
+
+  .steps-list {
+    gap: 1.5rem;
+  }
+
+  .steps-list li {
+    padding: 1.25rem;
+    font-size: 1.1rem;
+    gap: 1rem;
+  }
+
+  .step-number {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+  }
+
+  .guide-card {
+    padding: 1rem 1.25rem;
+    gap: 1rem;
+  }
+
+  .guide-info h3 {
+    font-size: 1.1rem;
+  }
+}

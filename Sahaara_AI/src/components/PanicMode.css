@@ -254,7 +254,103 @@
   transition: var(--transition-smooth);
 }
 
-.small-call-btn:hover {
-  background-color: var(--color-primary-700);
-  transform: scale(1.05);
+/* ========================================= */
+/* Responsive Design Adjustments             */
+/* ========================================= */
+@media screen and (max-width: 1200px) {
+  .panic-content {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  
+  .emergency-actions.card {
+    flex: none;
+    overflow: visible;
+  }
+  
+  .side-panic-cards {
+    flex-direction: row;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .panic-mode-container {
+    padding: 1.5rem;
+    height: auto;
+    min-height: 100vh;
+  }
+  
+  .side-panic-cards {
+    flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .panic-mode-container {
+    padding: 1rem;
+  }
+
+  .panic-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+    text-align: center;
+  }
+  
+  .panic-header h1 {
+    font-size: 1.75rem;
+  }
+  
+  .cancel-panic {
+    justify-content: center;
+  }
+  
+  .emergency-actions.card {
+    padding: 1.5rem;
+  }
+  
+  .emergency-actions h2 {
+    font-size: 1.5rem;
+  }
+  
+  .action-list li {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+  
+  .call-sos-btn {
+    padding: 1.25rem;
+    font-size: 1.5rem;
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+  
+  .breathing-card {
+    padding: 1.5rem;
+  }
+  
+  .breath-circle-container {
+    width: 140px;
+    height: 140px;
+  }
+  
+  .breath-circle {
+    font-size: 1.25rem;
+  }
+  
+  .nearest-hospital-card {
+    padding: 1.5rem;
+  }
+  
+  .hospital-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .small-call-btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
