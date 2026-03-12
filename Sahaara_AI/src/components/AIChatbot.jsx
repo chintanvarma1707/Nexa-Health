@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, User, Bot, AlertTriangle, Mic, Key, Scan } from 'lucide-react';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { callGroq } from '../utils/aiProviders';
 import ReactMarkdown from 'react-markdown';
 import { getTranslation } from '../utils/translations';
 import './AIChatbot.css';
@@ -59,8 +59,7 @@ const AIChatbot = ({ setTab, selectedLanguage, addToHistory, selectedHistoryItem
 
   const handleApiKeyChange = (e) => {
     const newKey = e.target.value;
-    setApiKey(newKey);
-    localStorage.setItem('sahaara_gemini_key', newKey);
+    onApiKeyChange(newKey);
   };
 
   const handleSend = () => {
@@ -103,23 +102,9 @@ const AIChatbot = ({ setTab, selectedLanguage, addToHistory, selectedHistoryItem
       return;
     }
 
-    if (!apiKey) {
-      setIsTyping(false);
-      return;
-    }
-
-    // 3. GLOBAL MEDICAL DATABASE VIA STABLE v1 REST API
+    // 3. AI MEDICAL ANALYSIS VIA GROQ API
     try {
-      const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || apiKey;
-      if (!API_KEY) {
-        throw new Error("MISSING_API_KEY");
-      }
-
-      const modelName = "gemini-2.5-flash";
-      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${API_KEY}`;
-
-      const triagePrompt = `You are Sahaara AI, the world's most advanced clinical triage system. Your goal is to provide ACCURATE, DATA-DRIVEN, and COMPREHENSIVE medical guidance.
-      User symptoms: "${text}"
+      const systemPrompt = `You are Sahaara AI, the world's most advanced clinical triage system. Your goal is to provide ACCURATE, DATA-DRIVEN, and COMPREHENSIVE medical guidance.
       User Language: ${selectedLanguage}
       
       Respond professionally in **${selectedLanguage}** with the following structure:
@@ -133,24 +118,7 @@ const AIChatbot = ({ setTab, selectedLanguage, addToHistory, selectedHistoryItem
       
       At the very end, include [SUMMARY_DATA] followed by a JSON: {"condition": "...", "urgency": "Low/Medium/High"}`;
 
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: triagePrompt }] }]
-        })
-      });
-
-      if (!response.ok) {
-        const errorBody = await response.json().catch(() => ({}));
-        console.error("Gemini Triage Error details:", errorBody);
-        throw new Error(`API Error: ${response.status}`);
-      }
-
-      const data = await response.json();
-      const responseText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-      if (!responseText) throw new Error("Empty response");
+      const responseText = await callGroq(systemPrompt, text);
 
       let finalMessage = responseText;
       let summary = null;
@@ -185,9 +153,9 @@ const AIChatbot = ({ setTab, selectedLanguage, addToHistory, selectedHistoryItem
 
     } catch (error) {
       console.error("Triage Analysis Error:", error);
-      let errorText = "I am having trouble connecting to my medical database. Please ensure your Gemini API Key is valid and active.";
-      if (error.message === "MISSING_API_KEY") {
-        errorText = "Gemini API Key is missing. Please enter your API key to enable clinical analysis.";
+      let errorText = "I am having trouble connecting to the AI medical database. Please check your API configuration.";
+      if (error.message === "MISSING_GROQ_API_KEY") {
+        errorText = "AI API Key is missing. Please configure the Groq API key in your .env file.";
       }
       setMessages(prev => [...prev, {
         role: 'bot',
@@ -255,16 +223,10 @@ const AIChatbot = ({ setTab, selectedLanguage, addToHistory, selectedHistoryItem
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          {(!import.meta.env.VITE_GEMINI_API_KEY || !apiKey) && (
+          {!import.meta.env.VITE_GROQ_API_KEY && (
             <div className="api-key-input" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(0,0,0,0.1)', padding: '0.5rem', borderRadius: '8px', border: '1px solid var(--color-primary-200)' }}>
               <Key size={16} color="var(--color-primary-600)" />
-              <input
-                type="password"
-                placeholder="Insert Gemini API Key..."
-                value={apiKey}
-                onChange={handleApiKeyChange}
-                style={{ border: 'none', outline: 'none', background: 'transparent', color: 'var(--color-text-main)', fontSize: '0.8rem', width: '150px' }}
-              />
+              <span style={{ fontSize: '0.75rem', color: 'var(--color-primary-600)' }}>Groq AI Connected ✓</span>
             </div>
           )}
           <button
@@ -284,21 +246,14 @@ const AIChatbot = ({ setTab, selectedLanguage, addToHistory, selectedHistoryItem
       </div>
 
       <div className="chat-area">
-        {!apiKey && (
+        {!import.meta.env.VITE_GROQ_API_KEY && (
           <div className="api-setup-overlay">
             <div className="setup-card">
               <Key size={40} color="var(--color-primary-600)" />
-              <h3>Connect Gemini AI</h3>
-              <p>To use Sahaara's global medical database, please insert your Google Gemini API Key.</p>
-              <input
-                type="password"
-                className="setup-key-input"
-                placeholder="Paste API Key here..."
-                value={apiKey}
-                onChange={(e) => onApiKeyChange(e.target.value)}
-              />
+              <h3>Connect AI Engine</h3>
+              <p>To use Sahaara's medical AI, please configure the VITE_GROQ_API_KEY in your .env file.</p>
               <div className="setup-links">
-                <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer">Get Free Key</a>
+                <a href="https://console.groq.com" target="_blank" rel="noreferrer">Get Free Groq Key</a>
                 <button onClick={() => setTab('guide')}>How to setup?</button>
               </div>
             </div>

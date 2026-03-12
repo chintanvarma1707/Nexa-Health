@@ -5,7 +5,7 @@ import {
   PhoneCall, ShieldAlert, Heart, Calendar, FileText, ChevronRight,
   Play, Pause
 } from 'lucide-react';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { callGroq } from '../utils/aiProviders';
 import ReactMarkdown from 'react-markdown';
 import { getTranslation } from '../utils/translations';
 import doctorAvatar from '../assets/doctor/avatar.png';
@@ -178,12 +178,12 @@ const VirtualDoctor = ({ selectedLanguage, token, addToHistory, selectedHistoryI
       setIsEmergency(true);
     }
 
-    if (!apiKey) {
+    if (!import.meta.env.VITE_GROQ_API_KEY) {
       setTimeout(() => {
         setMessages(prev => [...prev, {
           role: 'doctor',
           id: Date.now(),
-          text: "I need an API key to provide a full medical assessment. Please enter it in the AI Chat section.",
+          text: "I need an AI API key to provide a full medical assessment. Please configure the VITE_GROQ_API_KEY in your .env file.",
           type: 'normal'
         }]);
         setIsTyping(false);
@@ -191,16 +191,9 @@ const VirtualDoctor = ({ selectedLanguage, token, addToHistory, selectedHistoryI
       return;
     }
 
-    // 3. GLOBAL MEDICAL DATABASE VIA STABLE v1 REST API
+    // 3. AI CLINICAL ANALYSIS VIA GROQ API
     try {
-      const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || apiKey;
-      if (!API_KEY) throw new Error("MISSING_API_KEY");
-
-      const modelName = "gemini-2.5-flash";
-      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${API_KEY}`;
-
-      const doctorPrompt = `You are Dr. Sahaara, a world-class AI medical specialist. You provide extremely high-accuracy clinical analysis and empathetic care.
-      User message: "${userInput}"
+      const systemPrompt = `You are Dr. Sahaara, a world-class AI medical specialist. You provide extremely high-accuracy clinical analysis and empathetic care.
       Language: ${selectedLanguage}
       Emergency State: ${isEmergency ? "ACTIVE" : "NONE"}
       
@@ -215,22 +208,7 @@ const VirtualDoctor = ({ selectedLanguage, token, addToHistory, selectedHistoryI
       
       At the end, include [SUMMARY_DATA] followed by a JSON: {"condition": "...", "severity": "...", "risk_level": "...", "duration": "...", "symptoms_list": []}`;
 
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: doctorPrompt }] }]
-        })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        console.error("Doctor API error details:", errorData);
-        throw new Error(`API Error: ${response.status}`);
-      }
-
-      const data = await response.json();
-      const responseText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      const responseText = await callGroq(systemPrompt, userInput);
 
       if (!responseText) throw new Error("Empty response");
 
@@ -270,9 +248,9 @@ const VirtualDoctor = ({ selectedLanguage, token, addToHistory, selectedHistoryI
 
     } catch (error) {
       console.error("Doctor Analysis Error:", error);
-      let errorMsg = "I am having trouble connecting to my medical database. Please ensure your Gemini API key is configured correctly.";
-      if (error.message === "MISSING_API_KEY") {
-        errorMsg = "Doctor access requires a Gemini API Key. Please provide it in the AI Chat settings.";
+      let errorMsg = "I am having trouble connecting to the AI medical database. Please check your API configuration.";
+      if (error.message === "MISSING_GROQ_API_KEY") {
+        errorMsg = "Doctor access requires a Groq API Key. Please configure VITE_GROQ_API_KEY in your .env file.";
       }
       setMessages(prev => [...prev, {
         role: 'doctor',

@@ -2,9 +2,9 @@ import React, { useRef, useState, useEffect } from 'react';
 import * as tf from '@tensorflow/tfjs';
 import * as poseDetection from '@tensorflow-models/pose-detection';
 import '@tensorflow/tfjs-backend-webgl';
-import { Camera, Upload, AlertTriangle, ShieldCheck, X, Activity, Scan, Loader2, Image as ImageIcon, CheckCircle, RefreshCw } from 'lucide-react';
+import { Camera, Upload, AlertTriangle, ShieldCheck, X, Activity, Scan, Loader2, Image as ImageIcon, CheckCircle, RefreshCw, Key } from 'lucide-react';
 import { getTranslation } from '../utils/translations';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { callGeminiVision } from '../utils/aiProviders';
 import ReactMarkdown from 'react-markdown';
 import './EmergencyCamera.css';
 
@@ -46,8 +46,8 @@ const VisualScanner = ({ selectedLanguage, onCancel, setTab, globalApiKey, onApi
   }, []);
 
   const startCamera = async () => {
-    if (!globalApiKey) {
-      setErrorStatus("API Key is required for scanning.");
+    if (!import.meta.env.VITE_GEMINI_API_KEY && !globalApiKey) {
+      setErrorStatus("Gemini API Key is required for image scanning. Configure VITE_GEMINI_API_KEY in .env.");
       return;
     }
     setMode('camera');
@@ -98,8 +98,8 @@ const VisualScanner = ({ selectedLanguage, onCancel, setTab, globalApiKey, onApi
   };
 
   const handleFileUpload = (e) => {
-    if (!globalApiKey) {
-      setErrorStatus("API Key is required for analysis.");
+    if (!import.meta.env.VITE_GEMINI_API_KEY && !globalApiKey) {
+      setErrorStatus("Gemini API Key is required for image analysis. Configure VITE_GEMINI_API_KEY in .env.");
       return;
     }
     const file = e.target.files[0];
@@ -168,8 +168,8 @@ const VisualScanner = ({ selectedLanguage, onCancel, setTab, globalApiKey, onApi
   };
 
   const analyzeVisualContent = async (originalBase64) => {
-    if (!globalApiKey) {
-      setErrorStatus("API Key MISSING. Please enter your Gemini API Key in the 'AI Triage/Chat' tab first.");
+    if (!import.meta.env.VITE_GEMINI_API_KEY && !globalApiKey) {
+      setErrorStatus("API Key MISSING. Please configure VITE_GEMINI_API_KEY in your .env file for image analysis.");
       return;
     }
     setIsAnalyzing(true);
@@ -177,56 +177,15 @@ const VisualScanner = ({ selectedLanguage, onCancel, setTab, globalApiKey, onApi
     setScanResult(null);
 
     try {
-      // Step 1: Resize image to max 1024px as previously implemented for performance
+      // Step 1: Resize image to max 1024px for performance
       const resizedBase64 = await resizeImage(originalBase64, 1024);
 
-      // Step 2: Call stable /v1/ REST API with exact structure requested
-      // GLOBAL MEDICAL DATABASE VIA STABLE v1 REST API
-      const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || globalApiKey;
-      const modelName = "gemini-2.5-flash";
-      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${API_KEY}`;
-
-      // User requested exact prompt
+      // Step 2: Call Gemini Vision API via centralized helper
       const prompt = `Analyze this image and describe any visible skin condition, injury, rash, acne, burn, or infection. Provide simple health guidance. Respond in ${selectedLanguage}.`;
 
-      const requestBody = {
-        contents: [
-          {
-            parts: [
-              { text: prompt },
-              {
-                inline_data: {
-                  mime_type: "image/jpeg",
-                  data: resizedBase64
-                }
-              }
-            ]
-          }
-        ]
-      };
-
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody)
-      });
-
-      if (!response.ok) {
-        // Log detailed error for debugging as requested
-        const errorData = await response.json().catch(() => ({ error: "Could not parse error response" }));
-        console.error("Gemini API Error details:", errorData);
-        throw new Error(`Gemini API returned ${response.status}: ${JSON.stringify(errorData)}`);
-      }
-
-      const data = await response.json();
-      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-      if (!text) {
-        throw new Error("Empty response from AI");
-      }
+      const text = await callGeminiVision(prompt, resizedBase64, 'image/jpeg');
 
       // Step 3: Handle response display
-      // If it looks like JSON, try to parse it (for structured UI), otherwise show as raw text
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         try {
@@ -280,15 +239,15 @@ const VisualScanner = ({ selectedLanguage, onCancel, setTab, globalApiKey, onApi
 
       {!mode ? (
         <div className="scanner-setup-container">
-          {!globalApiKey && (
+          {!import.meta.env.VITE_GEMINI_API_KEY && !globalApiKey && (
             <div className="api-setup-card card">
               <div className="api-icon-bg"><Key size={32} /></div>
-              <h3>API Key Required</h3>
-              <p>To analyze medical images, please enter your Google Gemini API Key.</p>
+              <h3>Gemini API Key Required</h3>
+              <p>Image analysis requires a Google Gemini API Key. Configure VITE_GEMINI_API_KEY in your .env file.</p>
               <div className="api-input-group">
                 <input
                   type="password"
-                  placeholder="Paste your API key here..."
+                  placeholder="Or paste your API key here..."
                   value={globalApiKey}
                   onChange={handleApiKeyChange}
                 />
