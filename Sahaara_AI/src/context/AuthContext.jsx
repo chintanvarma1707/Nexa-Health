@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
     if (storedUser && token) {
       // In a real app, we might verify token validity here
       // For speed, we populate history once on mount if logged in
-      fetch(`${import.meta.env.VITE_API_URL}/user/history`, {
+      fetch(`${(import.meta.env.VITE_API_URL || '/api')}/user/history`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       .then(res => res.json())
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
 
     if (token) {
       try {
-        await fetch(`${import.meta.env.VITE_API_URL}/user/history`, {
+        await fetch(`${(import.meta.env.VITE_API_URL || '/api')}/user/history`, {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
+      const response = await fetch(`${(import.meta.env.VITE_API_URL || '/api')}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -81,7 +81,7 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (name, email, password) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/signup`, {
+      const response = await fetch(`${(import.meta.env.VITE_API_URL || '/api')}/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password }),
