@@ -419,16 +419,22 @@
 /* Responsive Design / Media Queries         */
 /* ========================================= */
 @media screen and (max-width: 900px) {
+  .virtual-doctor-container {
+    padding: 1rem;
+    height: auto;
+    min-height: calc(100vh - 140px);
+  }
+
   .doctor-layout {
     flex-direction: column;
     gap: 1.5rem;
+    flex: none; /* remove flex 1 to allow content to dictate height */
   }
 
   .doctor-video-panel {
     max-width: 100%;
-    /* Keep the video panel a distinct size but flexible */
-    aspect-ratio: 16 / 9;
-    min-height: 250px;
+    aspect-ratio: auto;
+    min-height: 300px;
   }
 
   .avatar-container {
@@ -436,20 +442,14 @@
   }
 
   .doctor-avatar {
-    max-width: 150px;
-    /* Smaller avatar on mobile */
+    max-width: 180px;
+    /* Smaller avatar on tablet */
   }
 
   .conversation-panel {
     /* Need to ensure it can scroll independently on mobile */
-    min-height: 400px;
-    flex: 1 1 auto;
-  }
-
-  .virtual-doctor-container {
-    padding: 1rem;
-    height: auto;
-    min-height: 100%;
+    min-height: 500px;
+    flex: none;
   }
 
   .message-bubble {
@@ -471,10 +471,13 @@
   }
 }
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 600px) {
   .doctor-video-panel {
-    aspect-ratio: 1 / 1;
-    min-height: 200px;
+    min-height: 250px;
+  }
+  
+  .doctor-avatar {
+    max-width: 140px;
   }
 
   .doctor-info-overlay {
@@ -483,6 +486,10 @@
 
   .doctor-name {
     font-size: 1.1rem;
+  }
+
+  .conversation-panel {
+    min-height: 400px;
   }
 
   .chat-messages {
@@ -497,5 +504,16 @@
   .icon-button {
     width: 38px;
     height: 38px;
+  }
+  
+  .summary-download-card {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .download-btn {
+    width: 100%;
+    justify-content: center;
   }
 }

@@ -163,7 +163,22 @@
 /* ========================================= */
 /* Responsive Dashboard Adjustments          */
 /* ========================================= */
+@media screen and (max-width: 1024px) {
+  .grid-cards {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+}
+
 @media screen and (max-width: 900px) {
+  .dashboard-container {
+    padding-bottom: 2rem;
+  }
+
+  .subtitle {
+    margin-bottom: 2.5rem;
+  }
+
   .disclaimer {
     flex-direction: column;
     text-align: center;
@@ -196,9 +211,14 @@
   }
 }
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 600px) {
   .grid-cards {
     grid-template-columns: 1fr;
-    /* Force 1 column on very small phones */
+    /* Force 1 column on phones */
+  }
+  
+  .disclaimer {
+    padding: 1rem;
+    font-size: 0.9rem;
   }
 }

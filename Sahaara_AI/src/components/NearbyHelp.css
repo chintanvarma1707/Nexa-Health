@@ -285,8 +285,64 @@
   border: 2px dashed var(--color-border);
 }
 
-.no-location-view p {
-  max-width: 400px;
-  color: var(--color-text-muted);
-  font-size: 1.1rem;
+/* Responsive */
+@media screen and (max-width: 900px) {
+  .nearby-container {
+    height: auto;
+    min-height: calc(100vh - 140px);
+  }
+
+  .content-layout {
+    flex-direction: column-reverse; /* Map on top for mobile, list below */
+    gap: 1.5rem;
+  }
+
+  .map-view {
+    min-height: 350px;
+    flex: none;
+  }
+  
+  .list-view {
+    flex: none;
+    padding-right: 0;
+  }
+  
+  .nearby-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .location-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .filter-tabs {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .filter-btn {
+    flex: 1;
+    min-width: calc(50% - 0.75rem);
+    text-align: center;
+    padding: 0.6rem 1rem;
+  }
+  
+  .hospital-card {
+    padding: 1.25rem !important;
+  }
+  
+  .hospital-info h3 {
+    font-size: 1.25rem;
+  }
+  
+  .action-buttons {
+    grid-template-columns: 1fr;
+  }
 }
