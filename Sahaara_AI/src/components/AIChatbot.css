@@ -205,6 +205,7 @@
 
 .chat-input-area input {
   flex: 1;
+  min-width: 0;
   padding: 1.25rem 2rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-full);
@@ -223,6 +224,7 @@
 .icon-btn {
   width: 55px;
   height: 55px;
+  flex-shrink: 0;
   border-radius: var(--radius-full);
   border: none;
   display: flex;

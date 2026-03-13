@@ -181,6 +181,7 @@
 
 .chat-input {
   flex: 1;
+  min-width: 0;
   padding: 0.875rem 1.25rem;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
@@ -199,6 +200,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   border-radius: 10px;
   border: none;
   cursor: pointer;
