@@ -1,12 +1,35 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
+const fs = require('fs');
+const path = require('path');
+
 const SECRET_KEY = process.env.JWT_SECRET || 'sahaara_ultra_secure_secret_789';
 
-// In-memory storage for Vercel serverless (stateless between invocations)
-// For production, consider using a cloud database like Supabase, PlanetScale, or MongoDB Atlas
-let users = [];
-let chatHistory = [];
+// Define the absolute path for the permanent database file in the api directory
+const dbPath = path.resolve(__dirname, 'db.json');
+
+// Helper definition to load the data from `db.json`
+function readDB() {
+  try {
+    if (fs.existsSync(dbPath)) {
+      const data = fs.readFileSync(dbPath, 'utf8');
+      return JSON.parse(data);
+    }
+  } catch (error) {
+    console.error('Error reading db.json:', error);
+  }
+  return { users: [], chatHistory: [] };
+}
+
+// Helper definition to save data to `db.json` permanently
+function writeDB(data) {
+  try {
+    fs.writeFileSync(dbPath, JSON.stringify(data, null, 2), 'utf8');
+  } catch (error) {
+    console.error('Error writing to db.json:', error);
+  }
+}
 
 // Helper: parse body
 function parseBody(req) {
@@ -59,8 +82,10 @@ module.exports = async (req, res) => {
   // --- SIGNUP ---
   if (req.method === 'POST' && url === '/auth/signup') {
     const { name, email, password } = await parseBody(req);
+    
+    const dbData = readDB();
 
-    const existing = users.find(u => u.email === email);
+    const existing = dbData.users.find(u => u.email === email);
     if (existing) {
       return sendJson(res, 400, { message: 'User already exists' });
     }
@@ -69,7 +94,9 @@ module.exports = async (req, res) => {
     const userId = Date.now().toString();
     const createdAt = new Date().toISOString();
     const newUser = { id: userId, name, email, password: hashedPassword, createdAt };
-    users.push(newUser);
+    
+    dbData.users.push(newUser);
+    writeDB(dbData);
 
     const token = jwt.sign({ id: userId, email }, SECRET_KEY, { expiresIn: '30d' });
     return sendJson(res, 201, {
@@ -83,7 +110,9 @@ module.exports = async (req, res) => {
   if (req.method === 'POST' && url === '/auth/login') {
     const { email, password } = await parseBody(req);
 
-    const user = users.find(u => u.email === email);
+    const dbData = readDB();
+
+    const user = dbData.users.find(u => u.email === email);
     if (!user) {
       return sendJson(res, 400, { message: 'Invalid credentials' });
     }
@@ -94,7 +123,7 @@ module.exports = async (req, res) => {
     }
 
     const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, { expiresIn: '30d' });
-    const history = chatHistory.filter(h => h.userId === user.id).slice(0, 10);
+    const history = dbData.chatHistory.filter(h => h.userId === user.id).slice(0, 10);
 
     return sendJson(res, 200, {
       token,
@@ -108,7 +137,8 @@ module.exports = async (req, res) => {
     const decoded = authenticate(req);
     if (!decoded) return sendJson(res, 401, { message: 'No token, authorization denied' });
 
-    const history = chatHistory.filter(h => h.userId === decoded.id);
+    const dbData = readDB();
+    const history = dbData.chatHistory.filter(h => h.userId === decoded.id);
     return sendJson(res, 200, history);
   }
 
@@ -126,7 +156,10 @@ module.exports = async (req, res) => {
       urgency,
       createdAt: new Date().toISOString()
     };
-    chatHistory.push(entry);
+    
+    const dbData = readDB();
+    dbData.chatHistory.push(entry);
+    writeDB(dbData);
 
     return sendJson(res, 201, entry);
   }
@@ -134,3 +167,4 @@ module.exports = async (req, res) => {
   // --- 404 ---
   return sendJson(res, 404, { message: 'API route not found' });
 };
+``

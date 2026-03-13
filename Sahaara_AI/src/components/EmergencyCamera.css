@@ -264,6 +264,105 @@
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
+.instructions-card {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+}
+
+.inst-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.inst-header h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-primary-800);
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.completed-badge {
+  background: var(--color-primary-100);
+  color: var(--color-primary-700);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.raw-description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--color-text-main);
+  background: white;
+  padding: 1.25rem;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+.raw-description h1, 
+.raw-description h2, 
+.raw-description h3, 
+.raw-description h4 {
+  color: var(--color-primary-900);
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.raw-description p {
+  margin-bottom: 1rem;
+}
+
+.raw-description ul, 
+.raw-description ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.raw-description li {
+  margin-bottom: 0.5rem;
+}
+
+.raw-description li::marker {
+  color: var(--color-primary-600);
+  font-weight: bold;
+}
+
+.raw-description strong {
+  color: var(--color-primary-800);
+  font-weight: 700;
+}
+
+.raw-description table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+  display: block;
+  overflow-x: auto;
+}
+
+.raw-description th, .raw-description td {
+  border: 1px solid var(--color-border);
+  padding: 0.5rem;
+}
+
 .result-container {
   flex: 1;
   display: flex;
@@ -392,6 +491,15 @@
 }
 
 @media (max-width: 768px) {
+  .instructions-card {
+    padding: 1.5rem;
+  }
+  
+  .raw-description {
+    padding: 1rem;
+    font-size: 0.9rem;
+  }
+
   .scanner-mode-picker {
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -423,6 +531,10 @@
 }
 
 @media (max-width: 480px) {
+  .instructions-card {
+    padding: 1rem;
+  }
+
   .emergency-alert-banner {
     left: 1rem;
     right: 1rem;
