@@ -1,0 +1,224 @@
+/* ──────────────────────────────────────────────────────
+   PRELOADER ROOT
+────────────────────────────────────────────────────── */
+.preloader-root {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at 30% 20%, #0a1628 0%, #050d1a 50%, #000810 100%);
+  overflow: hidden;
+}
+
+/* ── Ambient orbs ── */
+.preloader-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+}
+.orb-1 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%);
+  top: -120px; left: -120px;
+  animation: orbDrift1 8s ease-in-out infinite alternate;
+}
+.orb-2 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(52,211,153,0.1) 0%, transparent 70%);
+  bottom: -100px; right: -80px;
+  animation: orbDrift2 10s ease-in-out infinite alternate;
+}
+.orb-3 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(6,182,212,0.1) 0%, transparent 70%);
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+  animation: orbDrift3 6s ease-in-out infinite alternate;
+}
+@keyframes orbDrift1 { from { transform: translate(0,0); } to { transform: translate(60px, 40px); } }
+@keyframes orbDrift2 { from { transform: translate(0,0); } to { transform: translate(-40px,-50px); } }
+@keyframes orbDrift3 { from { transform: translate(-50%,-50%) scale(1); } to { transform: translate(-50%,-50%) scale(1.2); } }
+
+/* ── Particles ── */
+.preloader-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: #10b981;
+  animation: floatParticle ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes floatParticle {
+  from { transform: translate(0, 0) scale(1); opacity: 0.1; }
+  to   { transform: translate(12px, -18px) scale(1.4); opacity: 0.3; }
+}
+
+/* ── Center card ── */
+.preloader-card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(16,185,129,0.12);
+  border-radius: 40px;
+  padding: 3.5rem 4rem;
+  backdrop-filter: blur(30px);
+  box-shadow:
+    0 0 0 1px rgba(16,185,129,0.06),
+    0 40px 80px -20px rgba(0,0,0,0.8),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+  min-width: 340px;
+  text-align: center;
+}
+
+/* ── Logo ── */
+.preloader-logo-wrap {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preloader-logo-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+}
+.ring-outer {
+  border-top-color: #10b981;
+  border-right-color: rgba(16,185,129,0.3);
+  animation: spinRing 2.5s linear infinite;
+}
+.ring-mid {
+  inset: 14px;
+  border-bottom-color: #059669;
+  border-left-color: rgba(5,150,105,0.3);
+  animation: spinRing 1.8s linear infinite reverse;
+}
+@keyframes spinRing { to { transform: rotate(360deg); } }
+
+.preloader-logo-core {
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  background: radial-gradient(135deg, #0a2a20 0%, #071a12 100%);
+  border: 1px solid rgba(16,185,129,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  box-shadow:
+    0 0 30px rgba(16,185,129,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+/* Orbit dot */
+.preloader-orbit {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  animation: spinRing 3s linear infinite;
+}
+.preloader-orbit-dot {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 12px #34d399;
+}
+
+/* ── Brand name ── */
+.preloader-brand {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+.preloader-brand-nexa {
+  font-size: 2.2rem;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  background: linear-gradient(135deg, #ffffff 0%, #34d399 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.preloader-brand-health {
+  font-size: 1.1rem;
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  color: rgba(255,255,255,0.45);
+  text-transform: uppercase;
+}
+
+/* ── Tagline ── */
+.preloader-tagline {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: -0.5rem 0 0;
+}
+
+/* ── Pulse waveform ── */
+.preloader-wave {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 44px;
+  margin: 0.25rem 0;
+}
+.preloader-wave-bar {
+  width: 3px;
+  border-radius: 99px;
+  background: linear-gradient(180deg, #10b981, #059669);
+  box-shadow: 0 0 6px rgba(16,185,129,0.5);
+  animation: waveAnim 1.4s ease-in-out infinite alternate;
+}
+@keyframes waveAnim {
+  0%   { transform: scaleY(0.3); opacity: 0.4; }
+  100% { transform: scaleY(1);   opacity: 1;   }
+}
+
+/* ── Progress bar ── */
+.preloader-progress-track {
+  width: 100%;
+  height: 3px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.preloader-progress-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #10b981, #34d399, #6ee7b7);
+  box-shadow: 0 0 10px rgba(16,185,129,0.6);
+  transition: width 0.3s ease-out;
+}
+
+/* ── Status text ── */
+.preloader-status {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.06em;
+  min-height: 1.2em;
+  transition: all 0.4s;
+}
+.preloader-percent {
+  font-size: 0.72rem;
+  color: #10b981;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin-top: -0.75rem;
+}
