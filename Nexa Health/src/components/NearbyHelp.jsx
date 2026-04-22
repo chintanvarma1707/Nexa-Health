@@ -274,7 +274,8 @@ const NearbyHelp = ({ selectedLanguage, location, condition }) => {
         );
         out center tags;`;
       try {
-        const resp = await fetch('https://overpass-api.de/api/interpreter', {
+        // Using a more reliable Overpass API server with better CORS support
+        const resp = await fetch('https://overpass.kumi.systems/api/interpreter', {
           method: 'POST', body: query,
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         });
