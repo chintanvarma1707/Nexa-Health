@@ -8,7 +8,7 @@ from typing import List, Optional
 
 models.Base.metadata.create_all(bind=database.engine)
 
-app = FastAPI(title="Sahaara AI API")
+app = FastAPI(title="Nexa Health API")
 
 app.add_middleware(
     CORSMiddleware,
@@ -60,5 +60,5 @@ def delete_conversation(id: str, db: Session = Depends(database.get_db), user_id
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to Sahaara AI API"}
+    return {"message": "Welcome to Nexa Health API"}
 

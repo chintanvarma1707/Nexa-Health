@@ -4,10 +4,12 @@ import {
   Search, ChevronRight, FileText, Loader, AlertCircle
 } from 'lucide-react';
 import { getConversationHistory, deleteConversation } from '../utils/userDb';
+import { useTranslation } from '../utils/translations';
 import { motion, AnimatePresence } from 'framer-motion';
 import './ConsultationHistory.css';
 
-const ConsultationHistory = ({ userId, token, onSelect }) => {
+const ConsultationHistory = ({ userId, token, onSelect, selectedLanguage }) => {
+  const t = useTranslation(selectedLanguage);
   const [history, setHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -37,10 +39,10 @@ const ConsultationHistory = ({ userId, token, onSelect }) => {
   // Group by relative time
   const groupHistory = (items) => {
     const groups = {
-      Today: [],
-      Yesterday: [],
-      'Earlier this month': [],
-      Older: []
+      [t.today]: [],
+      [t.yesterday]: [],
+      [t.earlier]: [],
+      [t.older]: []
     };
 
     const now = new Date();
@@ -50,10 +52,10 @@ const ConsultationHistory = ({ userId, token, onSelect }) => {
 
     items.forEach(item => {
       const date = new Date(item.timestamp);
-      if (date >= today) groups.Today.push(item);
-      else if (date >= yesterday) groups.Yesterday.push(item);
-      else if (date > new Date(now.getFullYear(), now.getMonth() - 1, 1)) groups['Earlier this month'].push(item);
-      else groups.Older.push(item);
+      if (date >= today) groups[t.today].push(item);
+      else if (date >= yesterday) groups[t.yesterday].push(item);
+      else if (date > new Date(now.getFullYear(), now.getMonth() - 1, 1)) groups[t.earlier].push(item);
+      else groups[t.older].push(item);
     });
 
     return groups;
@@ -65,14 +67,14 @@ const ConsultationHistory = ({ userId, token, onSelect }) => {
     <div className="history-page">
       <div className="history-header">
         <div className="header-text">
-          <h1>Consultation History</h1>
-          <p>Review and manage your past AI medical consultations.</p>
+          <h1>{t.historyTitle}</h1>
+          <p>{t.historySub}</p>
         </div>
         <div className="search-bar">
           <Search size={18} />
           <input 
             type="text" 
-            placeholder="Search symptoms or topics..." 
+            placeholder={t.searchHistory}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -90,8 +92,8 @@ const ConsultationHistory = ({ userId, token, onSelect }) => {
             <div className="empty-icon-box">
               <History size={60} />
             </div>
-            <h3>No Records Yet</h3>
-            <p>Your AI consultations will appear here automatically.</p>
+            <h3>{t.noRecords}</h3>
+            <p>{t.noRecordsSub}</p>
           </div>
         ) : (
           <div className="groups-container">
@@ -110,7 +112,7 @@ const ConsultationHistory = ({ userId, token, onSelect }) => {
                         <div className="card-top">
                           <div className={`type-badge ${item.type}`}>
                             {item.type === 'voice' ? <Mic size={14} /> : <MessageSquare size={14} />}
-                            <span>{item.type === 'voice' ? 'Voice' : 'Chat'}</span>
+                            <span>{item.type === 'voice' ? t.voice : t.chat}</span>
                           </div>
                           <button 
                             className="delete-card-btn"
@@ -129,7 +131,7 @@ const ConsultationHistory = ({ userId, token, onSelect }) => {
                         </div>
 
                         <div className="card-hover-overlay">
-                          <span>View Details</span>
+                          <span>{t.viewDetails}</span>
                           <ChevronRight size={18} />
                         </div>
                       </motion.div>

@@ -1,14 +1,15 @@
 import React, { useState, useMemo } from 'react';
 import { BookOpen, Search, Droplets, Flame, Wind, EyeOff, Activity, ShieldAlert } from 'lucide-react';
-import { getTranslation } from '../utils/translations';
+import { useTranslation } from '../utils/translations';
 import './EmergencyGuide.css';
 
 const EmergencyGuide = ({ selectedLanguage }) => {
+  const t = useTranslation(selectedLanguage);
   const [selectedGuideId, setSelectedGuideId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
   const guides = useMemo(() => {
-    const localizedGuides = getTranslation(selectedLanguage, 'guides') || [];
+    const localizedGuides = t.guides || [];
     const icons = {
       choking: <Wind size={32} />,
       bleeding: <Droplets size={32} />,
@@ -44,14 +45,14 @@ const EmergencyGuide = ({ selectedLanguage }) => {
     <div className="guide-container red-alert-theme">
       <div className="guide-header red-header">
         <div>
-          <h2 className="page-title">{getTranslation(selectedLanguage, 'offline_emergency_guide')}</h2>
-          <p className="subtitle">{getTranslation(selectedLanguage, 'first_aid_offline')}</p>
+          <h2 className="page-title">{t.offline_emergency_guide}</h2>
+          <p className="subtitle">{t.first_aid_offline}</p>
         </div>
         <div className="search-bar">
           <Search size={20} color="var(--color-text-muted)" />
           <input 
             type="text" 
-            placeholder={getTranslation(selectedLanguage, 'search_guides')}
+            placeholder={t.search_guides}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -99,13 +100,13 @@ const EmergencyGuide = ({ selectedLanguage }) => {
                 ))}
               </ul>
               <div className="offline-badge">
-                <BookOpen size={16} /> {getTranslation(selectedLanguage, 'accessible_offline')}
+                <BookOpen size={16} /> {t.accessible_offline}
               </div>
             </div>
           ) : (
             <div className="empty-state">
               <BookOpen size={64} color="var(--color-border)" />
-              <p>{getTranslation(selectedLanguage, 'select_topic')}</p>
+              <p>{t.select_topic}</p>
             </div>
           )}
         </div>

@@ -3,12 +3,13 @@ import * as tf from '@tensorflow/tfjs';
 import * as poseDetection from '@tensorflow-models/pose-detection';
 import '@tensorflow/tfjs-backend-webgl';
 import { Camera, Upload, AlertTriangle, ShieldCheck, X, Activity, Scan, Loader2, Image as ImageIcon, CheckCircle, RefreshCw, Key } from 'lucide-react';
-import { getTranslation } from '../utils/translations';
-import { callGroqVision } from '../utils/aiProviders';
+import { useTranslation } from '../utils/translations';
+import { callGroqVision, callGeminiVision } from '../utils/aiProviders';
 import ReactMarkdown from 'react-markdown';
 import './EmergencyCamera.css';
 
 const VisualScanner = ({ selectedLanguage, onCancel, setTab, reportState, setReportState, setDoctorInitialContext }) => {
+  const t = useTranslation(selectedLanguage);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -175,7 +176,7 @@ const VisualScanner = ({ selectedLanguage, onCancel, setTab, reportState, setRep
       const resizedBase64 = await resizeImage(originalBase64, 1024);
 
       // Step 2: Call Gemini Vision API via centralized helper
-      const prompt = `You are Nexa Health's highly advanced AI Medical Consultant.
+      const prompt = `You are Nexa Health's highly advanced Virtual Doctor.
 Analyze the provided image. It may be a medical laboratory report, a prescription, or a physical symptom (like a rash or injury).
 
 Adopt the persona of an empathetic, authoritative, and professional doctor consulting a patient.
@@ -204,7 +205,7 @@ Respond in ${selectedLanguage}. IMPORTANT: ONLY output the raw JSON object. Do n
           const parsedData = JSON.parse(jsonMatch[0]);
           setScanResult(parsedData);
           if (parsedData.emergency) {
-            setEmergencyAlert(getTranslation(selectedLanguage, 'possible_emergency_detected'));
+            setEmergencyAlert(t.possible_emergency_detected);
           }
         } catch (e) {
           setScanResult({ rawText: text });
@@ -230,7 +231,7 @@ Respond in ${selectedLanguage}. IMPORTANT: ONLY output the raw JSON object. Do n
       if (poses && poses.length > 0) {
         const nose = poses[0].keypoints.find(k => k.name === 'nose');
         if (nose?.score > 0.4 && nose.y > 420) {
-          setEmergencyAlert(getTranslation(selectedLanguage, 'unconscious_detected'));
+          setEmergencyAlert(t.unconscious_detected);
         }
       }
     } catch (e) {
@@ -255,12 +256,12 @@ Respond in ${selectedLanguage}. IMPORTANT: ONLY output the raw JSON object. Do n
           <div className={`scanner-mode-picker`}>
             <div className="mode-card" onClick={startCamera}>
               <div className="mode-icon"><Camera size={48} /></div>
-              <h3>{getTranslation(selectedLanguage, 'scan_using_camera')}</h3>
+              <h3>{t.scan_using_camera}</h3>
               <p>Use live feed for real-time body scan</p>
             </div>
             <div className="mode-card" onClick={() => fileInputRef.current.click()}>
               <div className="mode-icon"><Upload size={48} /></div>
-              <h3>{getTranslation(selectedLanguage, 'upload_photo_analysis')}</h3>
+              <h3>{t.upload_photo_analysis}</h3>
               <p>Choose an existing photo from gallery</p>
               <input type="file" ref={fileInputRef} hidden accept="image/*" onChange={handleFileUpload} />
             </div>
@@ -286,7 +287,7 @@ Respond in ${selectedLanguage}. IMPORTANT: ONLY output the raw JSON object. Do n
               {isAnalyzing && (
                 <div className="scanning-overlay">
                   <div className="scan-line-v2"></div>
-                  <div className="analyzing-text">{getTranslation(selectedLanguage, 'analyzing_image')}</div>
+                  <div className="analyzing-text">{t.analyzing_image}</div>
                 </div>
               )}
 
@@ -302,7 +303,7 @@ Respond in ${selectedLanguage}. IMPORTANT: ONLY output the raw JSON object. Do n
                 <RefreshCw size={18} /> Rescan / Back
               </button>
               <div className="safety-badge">
-                <ShieldCheck size={14} /> {getTranslation(selectedLanguage, 'scanner_safety_disclaimer')}
+                <ShieldCheck size={14} /> {t.scanner_safety_disclaimer}
               </div>
             </div>
           </div>
@@ -317,7 +318,7 @@ Respond in ${selectedLanguage}. IMPORTANT: ONLY output the raw JSON object. Do n
               {isAnalyzing ? (
                 <div className="analyzing-placeholder">
                   <Loader2 className="spin" size={48} />
-                  <p>Nexa Health is processing medical patterns...</p>
+                  <p>{t.processingPatterns}</p>
                 </div>
               ) : scanResult ? (
                 <div className="scan-data">
@@ -331,17 +332,17 @@ Respond in ${selectedLanguage}. IMPORTANT: ONLY output the raw JSON object. Do n
                   ) : (
                     <>
                       <div className="result-field">
-                        <label>{getTranslation(selectedLanguage, 'possible_condition')}</label>
+                        <label>{t.possible_condition}</label>
                         <div className="condition-name">{scanResult.condition}</div>
                       </div>
 
                       <div className="result-field">
-                        <label>{getTranslation(selectedLanguage, 'explanation')}</label>
+                        <label>{t.explanation}</label>
                         <p>{scanResult.explanation}</p>
                       </div>
 
                       <div className="result-field">
-                        <label>{getTranslation(selectedLanguage, 'suggested_care')}</label>
+                        <label>{t.suggested_care}</label>
                         <ul className="care-list">
                           {(scanResult.care || []).map((step, i) => (
                             <li key={i}><CheckCircle size={14} /> {step}</li>
@@ -350,7 +351,7 @@ Respond in ${selectedLanguage}. IMPORTANT: ONLY output the raw JSON object. Do n
                       </div>
 
                       <div className="result-field">
-                        <label>{getTranslation(selectedLanguage, 'doctor_advice')}</label>
+                        <label>{t.doctor_advice}</label>
                         <p className="advice-text">{scanResult.advice}</p>
                       </div>
                     </>

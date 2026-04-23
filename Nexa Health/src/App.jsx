@@ -6,9 +6,9 @@ import Dashboard from './components/Dashboard';
 import NearbyHelp from './components/NearbyHelp';
 import EmergencyGuide from './components/EmergencyGuide';
 import HealthReport from './components/HealthReport';
+import EmergencyCamera from './components/EmergencyCamera';
 import PanicMode from './components/PanicMode';
 import Loader from './components/Loader';
-import EmergencyCamera from './components/EmergencyCamera';
 import VirtualDoctorChat from './components/VirtualDoctorChat';
 import MedicineAgent from './components/MedicineAgent';
 import ConsultationHistory from './components/ConsultationHistory';
@@ -34,17 +34,25 @@ function App() {
   const [selectedHistoryItem, setSelectedHistoryItem] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
+
   // Persistent Chat State
   const [activeMessages, setActiveMessages] = useState([
-    { role: 'assistant', content: "Hello! I'm Dr. Nexa. Please describe your symptoms in detail and I'll provide a comprehensive medical assessment including medications, home remedies, and emergency warning signs." }
+    {
+      role: 'assistant',
+      content: "Namaste! Please select your preferred language to continue:",
+      type: 'language-selector'
+    }
   ]);
   const [activeMode, setActiveMode] = useState('chat'); // 'chat' | 'voice'
   const [activeHistory, setActiveHistory] = useState([]);
 
   const resetActiveChat = () => {
     setActiveMessages([
-      { role: 'assistant', content: "Hello! I'm Dr. Nexa. Please describe your symptoms in detail and I'll provide a comprehensive medical assessment including medications, home remedies, and emergency warning signs." }
+      {
+        role: 'assistant',
+        content: "Namaste! Please select your preferred language to continue:",
+        type: 'language-selector'
+      }
     ]);
     setActiveMode('chat');
   };
@@ -58,7 +66,7 @@ function App() {
   }, [user, getToken]);
 
   const [apiKey, setApiKey] = useState(import.meta.env.VITE_GEMINI_API_KEY || localStorage.getItem('nexa_gemini_key') || '');
-  
+
   // Lifted state for persistent AI Report Agent
   const [reportState, setReportState] = useState({
     mode: null,
@@ -66,7 +74,7 @@ function App() {
     scanResult: null,
     errorStatus: null
   });
-  
+
   // Follow-up context for Virtual Doctor Chat
   const [doctorInitialContext, setDoctorInitialContext] = useState(null);
 
@@ -83,8 +91,8 @@ function App() {
         return <Dashboard setTab={setCurrentTab} selectedLanguage={selectedLanguage} />;
       case 'doctor':
         return (
-          <VirtualDoctorChat 
-            selectedLanguage={selectedLanguage} 
+          <VirtualDoctorChat
+            selectedLanguage={selectedLanguage}
             initialContext={doctorInitialContext}
             clearInitialContext={() => setDoctorInitialContext(null)}
             userId={user?.id}
@@ -94,13 +102,15 @@ function App() {
             activeMode={activeMode}
             setActiveMode={setActiveMode}
             onNewChat={resetActiveChat}
+            setSelectedLanguage={setSelectedLanguage}
           />
         );
       case 'history':
         return (
-          <ConsultationHistory 
-            userId={user?.id} 
-            token={authToken} 
+          <ConsultationHistory
+            userId={user?.id}
+            token={authToken}
+            selectedLanguage={selectedLanguage}
             onSelect={(conv) => {
               setActiveMessages(conv.messages);
               setActiveMode(conv.type || 'chat');
@@ -127,14 +137,26 @@ function App() {
           />
         );
       case 'medicine':
-        return <MedicineAgent />;
+        return <MedicineAgent selectedLanguage={selectedLanguage} />;
       case 'guide':
         return <EmergencyGuide selectedLanguage={selectedLanguage} />;
       case 'report':
-
         return <HealthReport selectedLanguage={selectedLanguage} userId={user?.id} token={authToken} userObj={user} />;
+      case 'report-ai':
+        return (
+          <EmergencyCamera
+            selectedLanguage={selectedLanguage}
+            onCancel={() => setCurrentTab('dashboard')}
+            setTab={setCurrentTab}
+            reportState={reportState}
+            setReportState={setReportState}
+            setDoctorInitialContext={setDoctorInitialContext}
+          />
+        );
+      case 'history':
+        return <Dashboard setTab={setCurrentTab} selectedLanguage={selectedLanguage} />;
       default:
-        return <Dashboard setTab={setCurrentTab} />;
+        return <Dashboard setTab={setCurrentTab} selectedLanguage={selectedLanguage} />;
     }
   };
 
@@ -151,8 +173,8 @@ function App() {
             <h1 className="brand-title">Nexa Health</h1>
             <p className="brand-subtitle">Your Premium Healthcare Assistant</p>
             <div className="clerk-container">
-              {showSignup ? 
-                <SignUp routing="virtual" signInUrl="/login" /> : 
+              {showSignup ?
+                <SignUp routing="virtual" signInUrl="/login" /> :
                 <SignIn routing="virtual" signUpUrl="/signup" />
               }
             </div>

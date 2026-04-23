@@ -59,7 +59,7 @@ export async function callGroq(systemPrompt, userMessage) {
 
 
 // ============ GEMINI API (Vision / Image Analysis) ============
-const GEMINI_MODEL = 'gemini-1.5-flash-latest';
+const GEMINI_MODEL = 'gemini-1.5-flash';
 
 /**
  * Call Gemini API for text-only responses (fallback).
@@ -73,7 +73,7 @@ export async function callGemini(prompt) {
     throw new Error('MISSING_GEMINI_API_KEY');
   }
 
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${API_KEY}`;
+  const apiUrl = `https://generativelanguage.googleapis.com/v1/models/${GEMINI_MODEL}:generateContent?key=${API_KEY}`;
 
   const response = await fetch(apiUrl, {
     method: 'POST',
@@ -98,6 +98,59 @@ export async function callGemini(prompt) {
 
   return text;
 }
+
+/**
+ * Call Gemini API with image input (Vision).
+ * Used as a reliable alternative to Groq for report scanning.
+ * 
+ * @param {string} prompt - The text prompt
+ * @param {string} imageBase64 - Base64-encoded image data
+ * @param {string} mimeType - Image MIME type (default: 'image/jpeg')
+ * @returns {Promise<string>} The AI response text
+ */
+export async function callGeminiVision(prompt, imageBase64, mimeType = 'image/jpeg') {
+  const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+  if (!API_KEY) {
+    throw new Error('MISSING_GEMINI_API_KEY');
+  }
+
+  const apiUrl = `https://generativelanguage.googleapis.com/v1/models/${GEMINI_MODEL}:generateContent?key=${API_KEY}`;
+
+  const response = await fetch(apiUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{
+        parts: [
+          { text: prompt },
+          {
+            inline_data: {
+              mime_type: mimeType,
+              data: imageBase64
+            }
+          }
+        ]
+      }]
+    }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    console.error('Gemini Vision API Error:', errorData);
+    throw new Error(`Gemini API Error: ${response.status}`);
+  }
+
+  const data = await response.json();
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  if (!text) {
+    throw new Error('Empty response from Gemini Vision');
+  }
+
+  return text;
+}
+
+
 
 /**
  * Call Groq API with image input (Vision).

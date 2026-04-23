@@ -4,12 +4,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Mic, Stethoscope, PhoneOff, Volume2, Loader,
   SkipForward, MessageSquare, Radio, Send, AlertTriangle,
-  Home, Pill, HeartPulse, ChevronDown, ChevronUp, Camera, Upload
+  Home, Pill, HeartPulse, ChevronDown, ChevronUp, Camera, Upload, PlusCircle
 } from 'lucide-react';
 
 import { callGroq } from '../utils/aiProviders';
 import ReactMarkdown from 'react-markdown';
 import { addConversationToHistory } from '../utils/userDb';
+import { useTranslation } from '../utils/translations';
 
 // ─── VOICE System Prompt (Short, Natural, Accurate) ──────────────────────────
 const VOICE_PROMPT = `You are Dr. Nexa, a highly experienced AI medical consultant on a voice call.
@@ -89,14 +90,32 @@ const DoctorAvatar = ({ status }) => {
 };
 
 // ─── CHAT MODE ────────────────────────────────────────────────────────────────
-const ChatMode = ({ initialContext, clearInitialContext, userId, token, messages, setMessages }) => {
+const ChatMode = ({ initialContext, clearInitialContext, userId, token, messages, setMessages, selectedLanguage, setSelectedLanguage }) => {
 
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const [chatHistory, setChatHistory] = useState([]);
+  const t = useTranslation(selectedLanguage);
 
   useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, isLoading]);
+
+  const handleLanguageSelect = (langCode) => {
+    setSelectedLanguage(langCode);
+    const trans = langCode === 'Hindi' ? 'हिन्दी' : langCode === 'Gujarati' ? 'ગુજરાતી' : langCode === 'Marathi' ? 'मराठी' : 'English';
+    
+    // Replace the selector with a welcome message in the new language
+    const welcomeMsgs = {
+      English: "Hello! I'm Dr. Nexa. Please describe your symptoms in detail and I'll provide a comprehensive medical assessment.",
+      Hindi: "नमस्ते! मैं डॉ. नेक्सा हूँ। कृपया अपने लक्षणों का विस्तार से वर्णन करें और मैं एक व्यापक चिकित्सा मूल्यांकन प्रदान करूँगा।",
+      Gujarati: "નમસ્તે! હું ડો. નેક્સા છું. કૃપા કરીને તમારા લક્ષણોનું વિગતવાર વર્ણન કરો અને હું વ્યાપક તબીબી મૂલ્યાંકન પ્રદાન કરીશ.",
+      Marathi: "नमस्ते! मी डॉ. नेक्सा आहे. कृपया तुमच्या लक्षणांचे तपशीलवार वर्णन करा आणि मी सर्वसमावेशक वैद्यकीय मूल्यांकन प्रदान करेन."
+    };
+
+    setMessages([
+      { role: 'assistant', content: welcomeMsgs[langCode] || welcomeMsgs.English }
+    ]);
+  };
 
   useEffect(() => {
     if (initialContext) {
@@ -120,7 +139,7 @@ const ChatMode = ({ initialContext, clearInitialContext, userId, token, messages
 
     try {
       const response = await callGroq(
-        CHAT_PROMPT,
+        CHAT_PROMPT + `\n\nCRITICAL: You MUST respond entirely in ${selectedLanguage}. All headers, assessments, and advice must be in ${selectedLanguage}.`,
         `Patient message (auto-correct any typos/speech errors): "${msg}"\n\nPrevious context:\n${contextPrompt}`
       );
       const now = new Date();
@@ -210,7 +229,19 @@ const ChatMode = ({ initialContext, clearInitialContext, userId, token, messages
               <div className="vd-chat-avatar-sm"><Stethoscope size={15} /></div>
             )}
             <div className={`vd-chat-bubble ${msg.role}`}>
-              <ReactMarkdown>{msg.content}</ReactMarkdown>
+              <div className="markdown-content">
+                <ReactMarkdown>{msg.content}</ReactMarkdown>
+              </div>
+              
+              {msg.type === 'language-selector' && (
+                <div className="vd-lang-selector-chat">
+                  <button onClick={() => handleLanguageSelect('English')}>GB <span>English</span></button>
+                  <button onClick={() => handleLanguageSelect('Hindi')}>IN <span>हिन्दी</span></button>
+                  <button onClick={() => handleLanguageSelect('Gujarati')}>IN <span>ગુજરાતી</span></button>
+                  <button onClick={() => handleLanguageSelect('Marathi')}>IN <span>मराठी</span></button>
+                </div>
+              )}
+
               {msg.timestamp && (
                 <div className="vd-chat-timestamp">
                   <span className="vd-time">{msg.timestamp.time}</span>
@@ -275,7 +306,7 @@ const ChatMode = ({ initialContext, clearInitialContext, userId, token, messages
 };
 
 // ─── VOICE MODE ───────────────────────────────────────────────────────────────
-const VoiceMode = ({ userId, token, setMessages }) => {
+const VoiceMode = ({ userId, token, setMessages, selectedLanguage }) => {
   const [status, setStatus] = useState('idle');
   const [transcript, setTranscript] = useState('');
   const [doctorCaption, setDoctorCaption] = useState('');
@@ -342,8 +373,8 @@ const VoiceMode = ({ userId, token, setMessages }) => {
     const context = currentHistory.slice(-8).map(m => `${m.role === 'user' ? 'Patient' : 'Dr. Nexa'}: ${m.content}`).join('\n\n');
     const isFirst = currentHistory.length === 0;
     const prompt = isFirst
-      ? 'Greet the patient warmly and ask what brings them in. 2 natural sentences.'
-      : `Conversation:\n${context}\n\nPatient said (fix any speech-to-text errors, interpret medically): "${userText}"\n\nRespond as Dr. Nexa. Include OTC medication name + dosage if relevant. 2-4 natural sentences, 1 follow-up question.`;
+      ? `Greet the patient warmly in ${selectedLanguage} and ask what brings them in. 2 natural sentences. Speak ONLY in ${selectedLanguage}.`
+      : `Conversation:\n${context}\n\nPatient said (fix any speech-to-text errors, interpret medically): "${userText}"\n\nRespond as Dr. Nexa in ${selectedLanguage}. Include OTC medication name + dosage if relevant. 2-4 natural sentences, 1 follow-up question. Speak ONLY in ${selectedLanguage}.`;
     try {
       const raw = await callGroq(VOICE_PROMPT, prompt);
       const clean = raw.replace(/\*\*/g, '').replace(/\*/g, '').replace(/#{1,6}\s/g, '').replace(/\n- /g, ' ').trim();
@@ -487,8 +518,10 @@ const VirtualDoctorChat = ({
   setActiveMessages,
   activeMode,
   setActiveMode,
-  onNewChat
+  onNewChat,
+  setSelectedLanguage
 }) => {
+  const t = useTranslation(selectedLanguage);
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
@@ -506,7 +539,7 @@ const VirtualDoctorChat = ({
       <div className="vd-tab-header">
         <div className="vd-tab-brand">
           <Stethoscope size={22} />
-          <span>Dr. Nexa — AI Medical Consultant</span>
+          <span>{t.virtualDrSubtitle}</span>
         </div>
         <div className="vd-tab-switcher">
           <button className={`vd-tab-btn ${activeMode === 'chat' ? 'active' : ''}`} onClick={() => setActiveMode('chat')}>
@@ -517,7 +550,7 @@ const VirtualDoctorChat = ({
           </button>
           <div className="vd-separator" style={{ width: '1px', height: '20px', background: 'rgba(255,255,255,0.1)', margin: '0 10px' }}></div>
           <button className="vd-tab-btn new-chat" onClick={onNewChat} style={{ color: '#10b981' }}>
-            <Radio size={16} /> New Chat
+            <PlusCircle size={16} /> New Chat
           </button>
         </div>
         
@@ -539,9 +572,11 @@ const VirtualDoctorChat = ({
               token={token}
               messages={activeMessages}
               setMessages={setActiveMessages}
+              selectedLanguage={selectedLanguage}
+              setSelectedLanguage={setSelectedLanguage}
             />
           ) : (
-            <VoiceMode userId={userId} token={token} setMessages={setActiveMessages} />
+            <VoiceMode userId={userId} token={token} setMessages={setActiveMessages} selectedLanguage={selectedLanguage} />
           )}
 
         </motion.div>

@@ -7,6 +7,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import { callGroq, callGroqVision } from '../utils/aiProviders';
+import { useTranslation } from '../utils/translations';
 import './MedicineAgent.css';
 
 const MEDICINE_PROMPT = `You are a clinical pharmacist AI. Analyze the given medicine and respond in this exact structured markdown format:
@@ -55,7 +56,8 @@ const QUICK_SEARCHES = [
   { name: 'Atorvastatin', icon: '❤️' },
 ];
 
-const MedicineAgent = () => {
+const MedicineAgent = ({ selectedLanguage }) => {
+  const t = useTranslation(selectedLanguage);
   const [medicineName, setMedicineName] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState(null);
@@ -128,8 +130,8 @@ const MedicineAgent = () => {
             <Pill size={26} />
           </div>
           <div>
-            <h1 className="ma-title">Medicine Intelligence</h1>
-            <p className="ma-subtitle">Clinical AI · Instant pharmacology analysis</p>
+            <h1 className="ma-title">{t.medIntelTitle}</h1>
+            <p className="ma-subtitle">{t.medIntelSub}</p>
           </div>
         </div>
         {result && (
@@ -140,7 +142,7 @@ const MedicineAgent = () => {
             animate={{ opacity: 1, scale: 1 }}
             whileHover={{ scale: 1.05 }}
           >
-            <RefreshCw size={16} /> New Search
+            <RefreshCw size={16} /> {t.newSearch}
           </motion.button>
         )}
       </motion.div>
@@ -160,13 +162,13 @@ const MedicineAgent = () => {
               className={`ma-mode-tab ${inputMode === 'text' ? 'active' : ''}`}
               onClick={() => setInputMode('text')}
             >
-              <Search size={15} /> Search by Name
+              <Search size={15} /> {t.searchByName}
             </button>
             <button 
               className={`ma-mode-tab ${inputMode === 'image' ? 'active' : ''}`}
               onClick={() => { setInputMode('image'); fileRef.current?.click(); }}
             >
-              <Camera size={15} /> Scan Image
+              <Camera size={15} /> {t.scanImage}
             </button>
           </div>
 
@@ -190,7 +192,7 @@ const MedicineAgent = () => {
 
                 {/* Quick Searches */}
                 <div className="ma-quick-section">
-                  <p className="ma-quick-label">Common Medicines</p>
+                  <p className="ma-quick-label">{t.commonMeds}</p>
                   <div className="ma-quick-grid">
                     {QUICK_SEARCHES.map(q => (
                       <motion.button
@@ -238,16 +240,16 @@ const MedicineAgent = () => {
             whileTap={{ scale: 0.97 }}
           >
             {isAnalyzing ? (
-              <><Loader className="ma-spin" size={20} /> Analyzing…</>
+              <><Loader className="ma-spin" size={20} /> {t.analyzing}</>
             ) : (
-              <><Scan size={20} /> Analyze Medicine</>
+              <><Scan size={20} /> {t.analyzeMed}</>
             )}
           </motion.button>
 
           {/* Disclaimer */}
           <div className="ma-disclaimer">
             <Shield size={16} />
-            <p>AI analysis only. Always consult a licensed pharmacist or physician before taking any medication.</p>
+            <p>{t.disclaimer}</p>
           </div>
         </motion.aside>
 
@@ -328,7 +330,7 @@ const MedicineAgent = () => {
                 </div>
 
                 <div className="ma-result-footer">
-                  <Shield size={14} /> Powered by Sahaara Clinical AI · For educational use only
+                  <Shield size={14} /> Powered by Nexa Clinical AI · For educational use only
                 </div>
               </motion.div>
 

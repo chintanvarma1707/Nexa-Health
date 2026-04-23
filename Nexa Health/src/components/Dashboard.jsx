@@ -1,60 +1,67 @@
 import React from 'react';
 import './Dashboard.css';
 import { motion } from 'framer-motion';
-import { AlertCircle, Pill, HeartPulse, Stethoscope, FileText, History } from 'lucide-react';
+import { AlertCircle, Pill, HeartPulse, Stethoscope, FileText, History, Scan } from 'lucide-react';
 import { useUser } from '@clerk/clerk-react';
+import { useTranslation } from '../utils/translations';
 
 const Dashboard = ({ setTab, selectedLanguage }) => {
   const { user } = useUser();
+  const t = useTranslation(selectedLanguage);
 
   const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good Morning';
-    if (hour < 17) return 'Good Afternoon';
-    if (hour < 21) return 'Good Evening';
-    return 'Good Night';
+    return t.welcome || 'Welcome';
   };
 
   const actions = [
     { 
       id: 'doctor', 
-      title: 'AI Medical Consultant', 
-      desc: 'Expert clinical assessments and symptom analysis through advanced AI medical intelligence.', 
+      title: t.virtualDoctor, 
+      desc: t.descDoctor, 
       icon: Stethoscope, 
-      color: 'primary' 
+      color: 'primary',
+      size: 'large'
+    },
+    { 
+      id: 'report-ai', 
+      title: t.reportAi, 
+      desc: t.descReportAi, 
+      icon: Scan, 
+      color: 'secondary',
+      size: 'medium'
     },
     { 
       id: 'medicine', 
-      title: 'Medicine Agent', 
-      desc: 'Pharmacological intelligence for dosage analysis and drug interaction checks.', 
+      title: t.medicineAgent, 
+      desc: t.descMedicine, 
       icon: Pill, 
-      color: 'secondary' 
+      color: 'tertiary' 
     },
     { 
       id: 'nearby', 
-      title: 'Nearby Help', 
-      desc: 'Instant GPS-based locator for certified hospitals and 24/7 pharmacies.', 
+      title: t.nearbyHelp, 
+      desc: t.descNearby, 
       icon: HeartPulse, 
       color: 'tertiary' 
     },
     { 
       id: 'guide', 
-      title: 'Emergency Guide', 
-      desc: 'Critical first-aid protocols and trauma instructions available offline.', 
+      title: t.emergencyGuide || 'Emergency Guide', 
+      desc: t.descGuide, 
       icon: AlertCircle, 
       color: 'emergency' 
     },
     { 
       id: 'report', 
-      title: 'Health Report', 
-      desc: 'AI-generated longitudinal summary of your wellness trends and medical data.', 
+      title: t.healthReport, 
+      desc: t.descReport, 
       icon: FileText, 
       color: 'secondary' 
     },
     { 
       id: 'history', 
-      title: 'Consultation History', 
-      desc: 'Secure digital archive of your past AI consultations and symptom tracking.', 
+      title: t.history || 'Consultation History', 
+      desc: t.descHistory, 
       icon: History, 
       color: 'tertiary' 
     }
@@ -83,7 +90,7 @@ const Dashboard = ({ setTab, selectedLanguage }) => {
         transition={{ duration: 0.5 }}
       >
         <h1>{getGreeting()}, {user?.firstName || 'User'}</h1>
-        <p className="welcome-message">How can Nexa Health assist you today?</p>
+        <p className="welcome-message">{t.welcomeSub}</p>
       </motion.div>
 
       <motion.div 
@@ -95,7 +102,7 @@ const Dashboard = ({ setTab, selectedLanguage }) => {
         {actions.map((action) => (
           <motion.div 
             key={action.id}
-            className={`premium-card action-card ${action.color} ${action.id}-area`}
+            className={`premium-card action-card ${action.color} ${action.id}-area ${action.size || 'small'}`}
             variants={itemVariants}
             whileHover={{ scale: 1.02, y: -5 }}
             whileTap={{ scale: 0.98 }}
@@ -121,7 +128,7 @@ const Dashboard = ({ setTab, selectedLanguage }) => {
             {action.id === 'doctor' && (
               <div className="doctor-status-badge">
                 <div className="status-dot" />
-                <span>Active AI Consultant</span>
+                <span>{t.activeVirtualDr}</span>
               </div>
             )}
           </motion.div>

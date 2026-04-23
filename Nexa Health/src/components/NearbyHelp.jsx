@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { MapPin, Crosshair, Navigation, Phone, AlertCircle, Layers, Map, Satellite } from 'lucide-react';
-import { getTranslation } from '../utils/translations';
+import { useTranslation } from '../utils/translations';
 import { motion, AnimatePresence } from 'framer-motion';
 import 'leaflet/dist/leaflet.css';
 import './NearbyHelp.css';
@@ -232,6 +232,7 @@ const LeafletMap = ({ userLocation, hospitals, selectedHospital, activeTile }) =
 
 // ─── Main NearbyHelp Component ────────────────────────────────────────────────
 const NearbyHelp = ({ selectedLanguage, location, condition }) => {
+  const t = useTranslation(selectedLanguage);
   const [hospitals, setHospitals] = useState([]);
   const [filter, setFilter] = useState('All');
   const [loading, setLoading] = useState(false);
@@ -320,8 +321,8 @@ const NearbyHelp = ({ selectedLanguage, location, condition }) => {
       {/* ── Header ── */}
       <div className="nearby-header">
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <h2 className="nearby-title">Nearby Medical Help</h2>
-          <p className="nearby-subtitle">Click a hospital in the list to locate it on the map</p>
+          <h2 className="nearby-title">{t.nearbyTitle}</h2>
+          <p className="nearby-subtitle">{t.nearbySub}</p>
         </motion.div>
         <motion.button
           className={`locate-btn ${locating ? 'locating' : ''}`}
@@ -333,7 +334,7 @@ const NearbyHelp = ({ selectedLanguage, location, condition }) => {
           animate={{ opacity: 1, x: 0 }}
         >
           <Crosshair size={18} className={locating ? 'spin-icon' : ''} />
-          {locating ? 'Locating…' : 'Locate My Location'}
+          {locating ? t.locating : t.locateMe}
         </motion.button>
       </div>
 

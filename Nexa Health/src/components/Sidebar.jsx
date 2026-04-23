@@ -1,8 +1,10 @@
 import React from 'react';
 import './Sidebar.css';
+import { useTranslation } from '../utils/translations';
 import {
   Home, MessageSquare, AlertCircle, HeartPulse,
-  FileText, Settings, LogOut, Menu, X, Shield, Stethoscope, User, History, Pill
+  FileText, Settings, LogOut, Menu, X, Shield, Stethoscope, User, History, Pill,
+  LayoutDashboard, FileSearch, MapPin
 } from 'lucide-react';
 
 
@@ -19,23 +21,22 @@ const Sidebar = ({
   setIsMobileMenuOpen
 }) => {
   const { signOut } = useClerk();
+  const t = useTranslation(selectedLanguage);
 
   const navItems = [
-    { id: 'dashboard', icon: Home, label: 'Dashboard' },
-    { id: 'doctor', icon: Stethoscope, label: 'AI Medical Consultant' },
-    { id: 'nearby', icon: HeartPulse, label: 'Nearby Help' },
-    { id: 'medicine', icon: Pill, label: 'Medicine Agent' },
-    { id: 'guide', icon: FileText, label: 'Emergency Guide' },
-    { id: 'report', icon: FileText, label: 'Health Report' },
-
+    { id: 'dashboard', label: t.dashboard, icon: LayoutDashboard },
+    { id: 'doctor', label: t.virtualDoctor, icon: Stethoscope, badge: 'AI' },
+    { id: 'report-ai', label: t.reportAi, icon: FileSearch },
+    { id: 'nearby', label: t.nearbyHelp, icon: MapPin },
+    { id: 'medicine', label: t.medicineAgent, icon: Pill },
+    { id: 'guide', icon: FileText, label: t.emergencyGuide },
+    { id: 'report', icon: FileText, label: t.healthReport },
   ];
 
-
-
   const bottomNavItems = [
-    { id: 'history', icon: History, label: 'History' },
-    { id: 'privacy', icon: Shield, label: 'Privacy Policy' },
-    { id: 'settings', icon: Settings, label: 'Settings' },
+    { id: 'history', icon: History, label: t.history },
+    { id: 'privacy', icon: Shield, label: t.privacyPolicy },
+    { id: 'settings', icon: Settings, label: t.settings },
   ];
 
 
@@ -109,8 +110,8 @@ const Sidebar = ({
           >
             <option value="English">🇬🇧 English</option>
             <option value="Hindi">🇮🇳 Hindi (हिन्दी)</option>
-            <option value="Bengali">🇧🇩 Bengali (বাংলা)</option>
             <option value="Marathi">🇮🇳 Marathi (मराठी)</option>
+            <option value="Gujarati">🇮🇳 Gujarati (ગુજરાતી)</option>
           </select>
 
           <button className="panic-button" onClick={activatePanic}>

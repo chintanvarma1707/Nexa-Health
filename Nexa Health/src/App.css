@@ -19,12 +19,19 @@
   scrollbar-color: rgba(16, 185, 129, 0.2) transparent;
 }
 
-.main-content::-webkit-scrollbar { width: 5px; }
-.main-content::-webkit-scrollbar-track { background: transparent; }
+.main-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.main-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 .main-content::-webkit-scrollbar-thumb {
   background: rgba(16, 185, 129, 0.2);
   border-radius: 99px;
 }
+
 .main-content::-webkit-scrollbar-thumb:hover {
   background: rgba(16, 185, 129, 0.4);
 }
@@ -57,7 +64,7 @@
   width: 600px;
   height: 600px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(16,185,129,0.06) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.06) 0%, transparent 70%);
   top: -200px;
   left: -150px;
   pointer-events: none;
@@ -69,7 +76,7 @@
   width: 500px;
   height: 500px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.06) 0%, transparent 70%);
   bottom: -150px;
   right: -100px;
   pointer-events: none;
@@ -84,8 +91,8 @@
   border-radius: 32px;
   text-align: center;
   box-shadow:
-    0 0 0 1px rgba(255,255,255,0.04),
-    0 40px 80px -20px rgba(0,0,0,0.8);
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 40px 80px -20px rgba(0, 0, 0, 0.8);
   animation: fadeIn 0.8s ease-out;
   display: flex;
   flex-direction: column;
@@ -136,13 +143,33 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 768px) {
-  .app-container { flex-direction: column; }
-  .main-content  { padding: 1rem; }
-  .auth-card     { padding: 2rem 1.5rem; width: 92%; border-radius: 24px; }
-  .brand-title   { font-size: 2.25rem; }
+  .app-container {
+    flex-direction: column;
+  }
+
+  .main-content {
+    padding: 1rem;
+  }
+
+  .auth-card {
+    padding: 2rem 1.5rem;
+    width: 92%;
+    border-radius: 24px;
+  }
+
+  .brand-title {
+    font-size: 2.25rem;
+  }
 }

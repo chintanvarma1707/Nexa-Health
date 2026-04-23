@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Settings.css';
+import { useTranslation } from '../utils/translations';
 import { useUser, useClerk } from '@clerk/clerk-react';
 import { motion } from 'framer-motion';
 import {
@@ -11,6 +12,7 @@ import {
 const Settings = ({ selectedLanguage, setSelectedLanguage }) => {
   const { user } = useUser();
   const { signOut } = useClerk();
+  const t = useTranslation(selectedLanguage);
   const [activeSection, setActiveSection] = useState('profile');
   const [editing, setEditing] = useState(false);
   const [displayName, setDisplayName] = useState(user?.fullName || '');
@@ -46,12 +48,12 @@ const Settings = ({ selectedLanguage, setSelectedLanguage }) => {
   };
 
   const menuSections = [
-    { id: 'profile', icon: User, label: 'Profile', color: '#0b7a75' },
-    { id: 'emergency_contacts', icon: Phone, label: 'Emergency Contacts', color: '#ef4444' },
-    { id: 'notifications', icon: Bell, label: 'Notifications', color: '#8b5cf6' },
-    { id: 'language', icon: Globe, label: 'Language & Region', color: '#f59e0b' },
-    { id: 'privacy', icon: Shield, label: 'Privacy & Security', color: '#64748b' },
-    { id: 'about', icon: HelpCircle, label: 'About Nexa Health', color: '#3b82f6' },
+    { id: 'profile', icon: User, label: t.profile, color: '#0b7a75' },
+    { id: 'emergency_contacts', icon: Phone, label: t.emergencyContacts, color: '#ef4444' },
+    { id: 'notifications', icon: Bell, label: t.notifications, color: '#8b5cf6' },
+    { id: 'language', icon: Globe, label: t.languageRegion, color: '#f59e0b' },
+    { id: 'privacy', icon: Shield, label: t.privacySecurity, color: '#64748b' },
+    { id: 'about', icon: HelpCircle, label: t.aboutNexa, color: '#3b82f6' },
   ];
 
   const renderSection = () => {
@@ -202,8 +204,8 @@ const Settings = ({ selectedLanguage, setSelectedLanguage }) => {
               {[
                 { code: 'English', label: 'English', native: 'English', flag: '🇬🇧' },
                 { code: 'Hindi', label: 'Hindi', native: 'हिन्दी', flag: '🇮🇳' },
-                { code: 'Bengali', label: 'Bengali', native: 'বাংলা', flag: '🇧🇩' },
                 { code: 'Marathi', label: 'Marathi', native: 'मराठी', flag: '🇮🇳' },
+                { code: 'Gujarati', label: 'Gujarati', native: 'ગુજરાતી', flag: '🇮🇳' },
               ].map((lang) => (
                 <button
                   key={lang.code}
@@ -245,19 +247,50 @@ const Settings = ({ selectedLanguage, setSelectedLanguage }) => {
 
       case 'about':
         return (
-          <div className="settings-section-content">
+          <div className="settings-section-content about-container">
+            <div className="version-badge">v2.1.0</div>
+            
             <div className="about-hero">
-              <div className="about-logo">💚</div>
+              <div className="about-logo">
+                <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 3 }}>
+                  💚
+                </motion.div>
+              </div>
               <h2>Nexa Health</h2>
-              <p className="about-version">Version 1.0.0 — Premium Healthcare Assistant</p>
+              <p className="about-tagline">Advanced Clinical Intelligence for Everyone</p>
             </div>
-            <div className="info-cards">
-              <div className="info-card"><span className="info-label">Framework</span><span className="info-value">React + Vite</span></div>
-              <div className="info-card"><span className="info-label">AI Provider</span><span className="info-value">Google Gemini + Groq</span></div>
-              <div className="info-card"><span className="info-label">Auth</span><span className="info-value">Clerk.dev</span></div>
-              <div className="info-card"><span className="info-label">Maps</span><span className="info-value">Leaflet + OpenStreetMap</span></div>
+
+            <div className="mission-grid">
+              <div className="mission-card">
+                <div className="mission-icon">🩺</div>
+                <h4>Clinical Triage</h4>
+                <p>Advanced AI that interprets symptoms and provides structured clinical assessment for you and your doctor.</p>
+              </div>
+              <div className="mission-card">
+                <div className="mission-icon">💊</div>
+                <h4>Drug Intelligence</h4>
+                <p>Instant pharmacological analysis identifying drug classes, interactions, and safe dosage guidelines.</p>
+              </div>
+              <div className="mission-card">
+                <div className="mission-icon">🚨</div>
+                <h4>Emergency Ready</h4>
+                <p>Real-time SOS protocols and critical red-flag detection to keep you safe in high-risk health situations.</p>
+              </div>
+              <div className="mission-card">
+                <div className="mission-icon">📋</div>
+                <h4>Health Insights</h4>
+                <p>Converting conversation history into structured medical reports to bridge the gap with healthcare providers.</p>
+              </div>
             </div>
-            <p className="about-disclaimer">Nexa Health is designed to assist users with health information and does not replace professional medical advice. Always consult a licensed physician for medical decisions.</p>
+
+            <div className="about-statement">
+              <h4>Empowering Your Health Journey</h4>
+              <p>Nexa Health is built to democratize medical intelligence, providing you with instant, accurate, and actionable health insights whenever you need them.</p>
+            </div>
+
+            <p className="about-disclaimer">
+              Nexa Health is an AI assistant designed for educational information. It does NOT provide formal medical diagnosis or treatment.
+            </p>
           </div>
         );
 
