@@ -18,6 +18,7 @@ import Settings from './components/Settings';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import { useAuth } from './context/AuthContext';
 import { SignedIn, SignedOut, SignIn, SignUp, useUser, useAuth as useClerkAuth } from '@clerk/clerk-react';
+import { dark } from '@clerk/themes';
 import { motion, AnimatePresence } from 'framer-motion';
 
 
@@ -168,19 +169,112 @@ function App() {
   return (
     <>
       <SignedOut>
-        <div className="auth-wrapper">
-          <div className="auth-card">
-            <h1 className="brand-title">Nexa Health</h1>
-            <p className="brand-subtitle">Your Premium Healthcare Assistant</p>
-            <div className="clerk-container">
-              {showSignup ?
-                <SignUp routing="virtual" signInUrl="/login" /> :
-                <SignIn routing="virtual" signUpUrl="/signup" />
-              }
+        <div className="auth-page-container">
+          <div className="auth-visual-side">
+            <div className="visual-content">
+              <div className="status-badge">
+                <span className="pulse-dot"></span>
+                System Live: Secure Connection Established
+              </div>
+              <h1 className="hero-title">Nexa Health</h1>
+              <p className="hero-subtitle">
+                Experience the future of personal healthcare.
+                AI-driven insights, real-time monitoring, and expert consultations.
+              </p>
+
+              <div className="feature-list">
+                <div className="feature-item">
+                  <div className="feature-icon">🛡️</div>
+                  <div className="feature-text">
+                    <strong>Secure Data</strong>
+                    <span>End-to-end encryption for all health records</span>
+                  </div>
+                </div>
+                <div className="feature-item">
+                  <div className="feature-icon">🤖</div>
+                  <div className="feature-text">
+                    <strong>AI Triage</strong>
+                    <span>Instant medical guidance powered by Gemini</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <button className="toggle-auth-btn" onClick={() => setShowSignup(!showSignup)}>
-              {showSignup ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
-            </button>
+          </div>
+
+          <div className="auth-form-side">
+            <div className="auth-card-modern">
+              <div className="auth-card-header">
+                <h2>Welcome Back</h2>
+                <p>Sign in to your premium health dashboard</p>
+              </div>
+
+              <div className="clerk-container-modern">
+                {showSignup ?
+                  <SignUp
+                    routing="virtual"
+                    signInUrl="/login"
+                    appearance={{
+                      baseTheme: dark,
+                      variables: {
+                        colorPrimary: '#10b981',
+                        colorBackground: 'transparent',
+                        colorInputBackground: 'rgba(255,255,255,0.05)',
+                        colorText: '#fff',
+                        borderRadius: '16px'
+                      },
+                      elements: {
+                        card: {
+                          background: 'transparent',
+                          boxShadow: 'none',
+                          border: 'none',
+                          padding: '0'
+                        },
+                        formButtonPrimary: {
+                          fontSize: '1rem',
+                          textTransform: 'none',
+                          fontWeight: '600',
+                          height: '48px'
+                        }
+                      }
+                    }}
+                  /> :
+                  <SignIn
+                    routing="virtual"
+                    signUpUrl="/signup"
+                    appearance={{
+                      baseTheme: dark,
+                      variables: {
+                        colorPrimary: '#10b981',
+                        colorBackground: 'transparent',
+                        colorInputBackground: 'rgba(255,255,255,0.05)',
+                        colorText: '#fff',
+                        borderRadius: '16px'
+                      },
+                      elements: {
+                        card: {
+                          background: 'transparent',
+                          boxShadow: 'none',
+                          border: 'none',
+                          padding: '0'
+                        },
+                        formButtonPrimary: {
+                          fontSize: '1rem',
+                          textTransform: 'none',
+                          fontWeight: '600',
+                          height: '48px'
+                        }
+                      }
+                    }}
+                  />
+                }
+              </div>
+
+              <div className="auth-footer">
+                <button className="auth-toggle-btn" onClick={() => setShowSignup(!showSignup)}>
+                  {showSignup ? 'Already have an account? Sign In' : "Don't have an account? Create one"}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </SignedOut>
