@@ -4,11 +4,11 @@
   "description": "Premium AI-Powered Healthcare Ecosystem",
   "private": true,
   "scripts": {
-    "client": "cd client && npm run dev",
+    "client": "cd \"Nexa Health\" && npm run dev",
     "server": "cd server-python && python -m uvicorn main:app --reload",
     "dev": "concurrently \"npm run client\" \"npm run server\"",
-    "install:all": "npm install && cd client && npm install",
-    "lint": "cd client && npm run lint"
+    "install:all": "npm install && cd \"Nexa Health\" && npm install",
+    "lint": "cd \"Nexa Health\" && npm run lint"
   },
   "devDependencies": {
     "concurrently": "^9.1.0"

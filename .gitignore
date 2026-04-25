@@ -42,10 +42,10 @@ ENV/
 env/
 nexa_health.db
 
-# Client specific
-client/node_modules/
-client/dist/
-client/.env
+# Nexa Health specific
+Nexa\ Health/node_modules/
+Nexa\ Health/dist/
+Nexa\ Health/.env
 
 # Server specific
 server-python/__pycache__/
