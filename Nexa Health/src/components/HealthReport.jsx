@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { 
   FileText, Printer, Stethoscope, Clock, 
   AlertCircle, ChevronRight, Loader, History, 
-  Trash2, Calendar, User, MessageSquare, Mic 
+  Trash2, Calendar, User, MessageSquare, Mic,
+  Activity, Pill, CheckCircle2, ChevronDown
 } from 'lucide-react';
 import { getConversationHistory, deleteConversation } from '../utils/userDb';
 import { callGroq } from '../utils/aiProviders';
@@ -32,18 +33,6 @@ const HealthReport = ({ selectedLanguage, userId, token, userObj }) => {
     }
   };
 
-  const handleDelete = async (e, id) => {
-    e.stopPropagation();
-    if (window.confirm("Delete this consultation from your records?")) {
-      await deleteConversation(userId, id, token);
-      setHistory(prev => prev.filter(h => h.id !== id));
-      if (selectedConv?.id === id) {
-        setSelectedConv(null);
-        setSummary(null);
-      }
-    }
-  };
-
   const generateSummary = async (conv) => {
     setIsGenerating(true);
     setSelectedConv(conv);
@@ -58,46 +47,31 @@ const HealthReport = ({ selectedLanguage, userId, token, userObj }) => {
         .map(m => `${m.role === 'user' ? 'Patient' : 'Dr. Nexa'}: ${m.content}`)
         .join('\n\n');
 
-      const prompt = `You are a professional medical scribe. Summarize the following clinical conversation into a formal, structured MEDICAL REPORT for a licensed physician.
+      const prompt = `You are a professional medical scribe. Summarize the following clinical conversation into a CONCISE, formal, structured MEDICAL REPORT that fits on a single A4 page.
       
       Conversation:
       ${convText}
       
-      Use the following Markdown structure strictly:
+      Use the following Markdown structure:
       # 📋 CLINICAL SUMMARY
       
-      ## 👤 Patient Reported Symptoms
-      (Bullet points of symptoms reported by the patient, duration, and severity)
-      
+      ## 👤 Symptoms Reported
       ## 🏥 Clinical Interpretation
-      (The AI's assessment of what might be happening)
-      
       ## 💊 Recommended Management
-      (List specific OTC medications with dosage/frequency IF suggested in chat, and home remedies)
-      
-      ## ⚠️ Urgent Red Flags
-      (List specific symptoms that require immediate ER attention for this condition)
-      
-      ## 👨‍⚕️ Follow-up Advice
-      (When to see a doctor in person)
-      
-      Write in a clinical, objective tone. Do not use conversational filler.`;
+      ## 👨‍⚕️ Advice & Red Flags (⚠️)`;
 
       const result = await callGroq("Format as a clean medical report.", prompt);
       setSummary(result);
     } catch (error) {
       console.error("Health Report Error:", error);
-      setSummary(`⚠️ **Error:** ${error.message || "Failed to generate clinical summary."} Please ensure your Groq API key is valid.`);
+      setSummary(`⚠️ **Error:** ${error.message}`);
     } finally {
       setIsGenerating(false);
     }
   };
 
-  const handlePrint = () => {
-    window.print();
-  };
+  const handlePrint = () => window.print();
 
-  // Group history by date
   const groupedHistory = history.reduce((acc, conv) => {
     const date = new Date(conv.timestamp).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
     if (!acc[date]) acc[date] = [];
@@ -109,24 +83,22 @@ const HealthReport = ({ selectedLanguage, userId, token, userObj }) => {
     <div className="report-container">
       <div className="report-header no-print">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-          <h2 className="page-title">{t.healthIntelTitle}</h2>
-          <p className="subtitle">{t.healthIntelSub}</p>
+          <h2 className="page-title">Health Intelligence</h2>
+          <p className="subtitle">Synthesize clinical data and consultation history</p>
         </motion.div>
       </div>
 
       <div className="report-grid">
-        {/* Sidebar: Conversation List */}
         <aside className="report-history-sidebar no-print">
           <div className="sidebar-header">
             <History size={18} />
-            <span>{t.historyTitle}</span>
+            <span>Consultation History</span>
           </div>
           
           <div className="history-list">
             {isLoadingHistory ? (
               <div className="sidebar-loader">
                 <Loader className="spin-icon" size={24} />
-                <span>{t.locating}</span>
               </div>
             ) : history.length > 0 ? (
               Object.entries(groupedHistory).map(([date, convs]) => (
@@ -145,9 +117,6 @@ const HealthReport = ({ selectedLanguage, userId, token, userObj }) => {
                         <span className="conv-title">{conv.title || 'General Consultation'}</span>
                         <span className="conv-time">{new Date(conv.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                       </div>
-                      <button className="delete-conv-btn" onClick={(e) => handleDelete(e, conv.id)}>
-                        <Trash2 size={14} />
-                      </button>
                     </div>
                   ))}
                 </div>
@@ -155,13 +124,12 @@ const HealthReport = ({ selectedLanguage, userId, token, userObj }) => {
             ) : (
               <div className="no-history-state">
                 <FileText size={40} opacity={0.2} />
-                <p>{t.noRecords}</p>
+                <p>No consultations found</p>
               </div>
             )}
           </div>
         </aside>
 
-        {/* Main: Report Content */}
         <main className="report-main-content">
           <AnimatePresence mode="wait">
             {isGenerating ? (
@@ -170,13 +138,12 @@ const HealthReport = ({ selectedLanguage, userId, token, userObj }) => {
                 className="report-loading-state"
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               >
-                <div className="pulse-circles">
-                  <div className="circle"></div>
-                  <div className="circle"></div>
-                  <div className="circle"></div>
+                <div className="scanner-animation">
+                  <div className="scan-line"></div>
+                  <FileText size={64} className="file-icon" />
                 </div>
-                <h3>{t.generatingReport}</h3>
-                <p>{t.generatingSub}</p>
+                <h3>Generating Clinical Summary...</h3>
+                <p>Our medical AI is analyzing the consultation data.</p>
               </motion.div>
             ) : summary ? (
               <motion.div 
@@ -186,13 +153,11 @@ const HealthReport = ({ selectedLanguage, userId, token, userObj }) => {
               >
                 <div className="report-actions no-print">
                   <button className="premium-btn print-btn" onClick={handlePrint}>
-                    <Printer size={18} /> {t.exportPdf}
+                    <Printer size={18} /> Export PDF
                   </button>
                 </div>
                 
                 <div className="report-paper shadow-premium" id="printable-report">
-                  <div className="report-watermark">NEXA AI</div>
-                  
                   <header className="clinical-header">
                     <div className="brand-box">
                       <div className="brand-logo"><Stethoscope size={28} /></div>
@@ -210,41 +175,26 @@ const HealthReport = ({ selectedLanguage, userId, token, userObj }) => {
                         <User size={12} />
                         <span><strong>PATIENT:</strong> {userObj?.fullName || 'Valued User'}</span>
                       </div>
-                      <div className="meta-item">
-                        <Clock size={12} />
-                        <span><strong>ID:</strong> {userId?.slice(-8).toUpperCase()}</span>
-                      </div>
                     </div>
                   </header>
 
                   <div className="clinical-body">
-                    {summary && typeof summary === 'string' ? (
-                      <div className="markdown-report">
-                        <ReactMarkdown>
-                          {summary}
-                        </ReactMarkdown>
-                      </div>
-                    ) : (
-                      <div className="report-error-placeholder">
-                        <AlertCircle size={24} />
-                        <p>The report content could not be displayed. Please try re-generating.</p>
-                        <button className="premium-btn mt-4" onClick={() => generateSummary(selectedConv)}>
-                          Retry Generation
-                        </button>
-                      </div>
-                    )}
+                    <div className="markdown-report">
+                      <ReactMarkdown>
+                        {summary}
+                      </ReactMarkdown>
+                    </div>
                   </div>
 
                   <footer className="clinical-footer">
                     <div className="warning-box">
                       <AlertCircle size={16} />
-                      <p>This report is synthesized by AI. It is NOT a professional diagnosis. Please present this to a human doctor for formal evaluation.</p>
+                      <p>AI-synthesized report. Not a professional diagnosis. Please consult a human physician.</p>
                     </div>
                     <div className="verification">
-                      <div className="qr-code-placeholder"></div>
                       <div className="signature">
                         <span className="sig-line"></span>
-                        <span className="sig-label">Digital Signature: Nexa Health AI Agent</span>
+                        <span className="sig-label">Digital Signature: Nexa AI Medical Agent</span>
                       </div>
                     </div>
                   </footer>
@@ -257,15 +207,10 @@ const HealthReport = ({ selectedLanguage, userId, token, userObj }) => {
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }}
               >
                 <div className="empty-illustration">
-                  <FileText size={80} className="float-icon" />
-                  <div className="sparkle s1"></div>
-                  <div className="sparkle s2"></div>
+                  <Activity size={80} className="float-icon" />
                 </div>
-                <h3>{t.readyToGenerate}</h3>
-                <p>{t.selectConsultation}</p>
-                {history.length === 0 && (
-                  <div className="empty-hint">{t.noRecordsSub}</div>
-                )}
+                <h3>Clinical History</h3>
+                <p>Select a past consultation from the sidebar to generate a clinical summary report.</p>
               </motion.div>
             )}
           </AnimatePresence>
@@ -276,4 +221,3 @@ const HealthReport = ({ selectedLanguage, userId, token, userObj }) => {
 };
 
 export default HealthReport;
-
