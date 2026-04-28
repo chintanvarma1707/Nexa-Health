@@ -14,26 +14,6 @@
   position: relative;
   scroll-behavior: smooth;
   padding: 2rem;
-  /* Custom scrollbar */
-  scrollbar-width: thin;
-  scrollbar-color: rgba(16, 185, 129, 0.2) transparent;
-}
-
-.main-content::-webkit-scrollbar {
-  width: 5px;
-}
-
-.main-content::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.main-content::-webkit-scrollbar-thumb {
-  background: rgba(16, 185, 129, 0.2);
-  border-radius: 99px;
-}
-
-.main-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(16, 185, 129, 0.4);
 }
 
 .content-wrapper {
@@ -42,27 +22,12 @@
   height: 100%;
 }
 
-/* ── Global Typography & Variables ── */
-:root {
-  --background-dark: #020617;
-  --accent-primary: #10b981;
-  --accent-secondary: #6366f1;
-  --glass-bg: rgba(15, 23, 42, 0.6);
-  --glass-border: rgba(255, 255, 255, 0.08);
-}
-
-body {
-  font-family: 'Outfit', sans-serif;
-  margin: 0;
-  background-color: var(--background-dark);
-}
-
 /* ── Auth Page (Split-Screen Premium) ── */
 .auth-page-container {
   display: flex;
   height: 100vh;
   width: 100vw;
-  background-color: #020617;
+  background-color: var(--background-dark);
   overflow: hidden;
 }
 
@@ -70,9 +35,9 @@ body {
 .auth-visual-side {
   flex: 1.2;
   position: relative;
-  background: radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.15) 0, transparent 50%),
+  background: radial-gradient(at 0% 0%, rgba(20, 184, 166, 0.15) 0, transparent 50%),
     radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.1) 0, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(20, 184, 166, 0.1) 0, transparent 50%),
     radial-gradient(at 0% 100%, rgba(99, 102, 241, 0.15) 0, transparent 50%);
   display: flex;
   align-items: center;
@@ -81,56 +46,48 @@ body {
   overflow: hidden;
 }
 
-.auth-visual-side::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
-  opacity: 0.03;
-  pointer-events: none;
-}
-
 .visual-content {
   max-width: 600px;
   z-index: 1;
-  animation: fadeInBlur 1.2s ease-out;
 }
 
 .status-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  background: rgba(20, 184, 166, 0.1);
+  border: 1px solid rgba(20, 184, 166, 0.2);
   padding: 0.6rem 1.2rem;
   border-radius: 99px;
-  color: #10b981;
+  color: var(--primary-light);
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .pulse-dot {
   width: 8px;
   height: 8px;
-  background: #10b981;
+  background: var(--primary);
   border-radius: 50%;
-  box-shadow: 0 0 10px #10b981;
+  box-shadow: 0 0 10px var(--primary);
   animation: pulse-ring 2s infinite;
 }
 
 .hero-title {
-  font-size: 5rem;
+  font-size: clamp(3rem, 8vw, 6rem);
   font-weight: 900;
   color: #fff;
   margin: 0 0 1.5rem 0;
-  letter-spacing: -3px;
-  line-height: 1;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
 }
 
 .hero-subtitle {
   font-size: 1.25rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 3rem;
 }
@@ -147,11 +104,11 @@ body {
 }
 
 .feature-icon {
-  width: 48px;
-  height: 48px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+  width: 52px;
+  height: 52px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -165,19 +122,19 @@ body {
 }
 
 .feature-text span {
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
 /* Right Form Side */
 .auth-form-side {
   flex: 0.8;
-  background: #020617;
+  background: var(--surface-dark);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  border-left: 1px solid var(--glass-border);
   position: relative;
   z-index: 2;
 }
@@ -185,7 +142,6 @@ body {
 .auth-card-modern {
   width: 100%;
   max-width: 420px;
-  animation: slideInLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .auth-card-header {
@@ -196,12 +152,12 @@ body {
   font-size: 2.5rem;
   font-weight: 800;
   color: #fff;
-  margin: 0 0 0.5rem 0;
-  letter-spacing: -1px;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.03em;
 }
 
 .auth-card-header p {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-secondary);
   font-size: 1rem;
 }
 
@@ -212,14 +168,14 @@ body {
 .auth-footer {
   text-align: center;
   padding-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid var(--glass-border);
 }
 
 .auth-toggle-btn {
   background: transparent;
   border: none;
-  color: #10b981;
-  font-weight: 600;
+  color: var(--primary-light);
+  font-weight: 700;
   cursor: pointer;
   font-size: 0.95rem;
   transition: all 0.2s;
@@ -227,75 +183,28 @@ body {
 
 .auth-toggle-btn:hover {
   color: #fff;
-  text-decoration: underline;
 }
 
 @keyframes pulse-ring {
-  0% {
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
-  }
-
-  70% {
-    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
-  }
-
-  100% {
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
-  }
-}
-
-@keyframes fadeInBlur {
-  from {
-    opacity: 0;
-    filter: blur(20px);
-    transform: scale(0.95);
-  }
-
-  to {
-    opacity: 1;
-    filter: blur(0);
-    transform: scale(1);
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  0% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.4); }
+  70% { box-shadow: 0 0 0 12px rgba(20, 184, 166, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0); }
 }
 
 @media (max-width: 1024px) {
-  .auth-visual-side {
-    display: none;
-  }
-
-  .auth-form-side {
-    flex: 1;
-  }
+  .auth-visual-side { display: none; }
+  .auth-form-side { flex: 1; border-left: none; }
 }
 
 @media (max-width: 768px) {
-  .app-container {
-    flex-direction: column;
-  }
-
-  .main-content {
-    padding: 1rem;
-  }
-
-  .auth-card {
-    padding: 2rem 1.5rem;
-    width: 92%;
-    border-radius: 24px;
-  }
-
-  .brand-title {
-    font-size: 2.25rem;
+  .app-container { flex-direction: column; }
+  .main-content { padding: 1rem; }
+  
+  .mobile-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 40;
   }
 }
