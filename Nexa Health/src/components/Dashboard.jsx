@@ -10,7 +10,10 @@ const Dashboard = ({ setTab, selectedLanguage }) => {
   const t = useTranslation(selectedLanguage);
 
   const getGreeting = () => {
-    return t.welcome || 'Welcome';
+    const hour = new Date().getHours();
+    if (hour < 12) return t.greetingMorning || 'Good Morning';
+    if (hour < 18) return t.greetingAfternoon || 'Good Afternoon';
+    return t.greetingEvening || 'Good Evening';
   };
 
   const actions = [

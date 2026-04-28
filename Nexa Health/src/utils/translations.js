@@ -14,6 +14,9 @@ export const translations = {
     
     welcome: "Good Morning",
     welcomeSub: "Your health intelligence is up to date.",
+    greetingMorning: "Good Morning",
+    greetingAfternoon: "Good Afternoon",
+    greetingEvening: "Good Evening",
     
     // Dashboard Descriptions
     descDoctor: "Expert clinical assessments and symptom analysis through advanced AI medical intelligence.",
@@ -119,6 +122,9 @@ export const translations = {
     
     welcome: "सुप्रभात",
     welcomeSub: "आपकी स्वास्थ्य जानकारी अपडेट है।",
+    greetingMorning: "सुप्रभात",
+    greetingAfternoon: "नमस्कार",
+    greetingEvening: "शुभ संध्या",
     
     descDoctor: "उन्नत AI चिकित्सा बुद्धिमत्ता के माध्यम से विशेषज्ञ नैदानिक मूल्यांकन और लक्षण विश्लेषण।",
     descMedicine: "खुराक विश्लेषण और दवा बातचीत जांच के लिए औषधीय बुद्धिमत्ता।",

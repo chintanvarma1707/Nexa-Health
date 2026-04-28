@@ -14,6 +14,7 @@ import MedicineAgent from './components/MedicineAgent';
 import ConsultationHistory from './components/ConsultationHistory';
 
 import Settings from './components/Settings';
+import ReportAI from './components/ReportAI';
 
 import PrivacyPolicy from './components/PrivacyPolicy';
 import { useAuth } from './context/AuthContext';
@@ -145,17 +146,13 @@ function App() {
         return <HealthReport selectedLanguage={selectedLanguage} userId={user?.id} token={authToken} userObj={user} />;
       case 'report-ai':
         return (
-          <EmergencyCamera
-            selectedLanguage={selectedLanguage}
-            onCancel={() => setCurrentTab('dashboard')}
-            setTab={setCurrentTab}
-            reportState={reportState}
-            setReportState={setReportState}
-            setDoctorInitialContext={setDoctorInitialContext}
+          <ReportAI 
+            selectedLanguage={selectedLanguage} 
+            userId={user?.id} 
+            token={authToken} 
+            userObj={user} 
           />
         );
-      case 'history':
-        return <Dashboard setTab={setCurrentTab} selectedLanguage={selectedLanguage} />;
       default:
         return <Dashboard setTab={setCurrentTab} selectedLanguage={selectedLanguage} />;
     }
