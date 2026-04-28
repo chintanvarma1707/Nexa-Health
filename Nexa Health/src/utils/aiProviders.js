@@ -2,8 +2,9 @@
  * Centralized AI Provider Module
  * 
  * Distributes API calls across multiple providers to avoid rate limits:
- * - Groq (llama-3.3-70b-versatile): Text-based features (Chat, Doctor)
- * - Gemini (gemini-2.5-flash): Vision/Image features (Camera/Scan)
+ * - Groq (llama-3.3-70b-versatile): Text-based features
+ * - Groq (llama-4-scout): Fast Image/Vision analysis
+ * - Gemini (gemini-1.5-flash): Advanced Multi-modal (PDF/Documents)
  */
 
 // ============ GROQ API (Text Generation) ============
@@ -210,4 +211,67 @@ export async function callGroqVision(prompt, imageBase64, mimeType = 'image/jpeg
 
   return text;
 }
+/**
+ * Call Gemini API with PDF input.
+ * Used for scanning medical reports.
+ * 
+ * @param {string} prompt - The text prompt
+ * @param {string} pdfBase64 - Base64-encoded PDF data
+ * @returns {Promise<string>} The AI response text
+ */
+export async function callGeminiPdf(prompt, pdfBase64) {
+  const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+  if (!API_KEY) {
+    throw new Error('MISSING_GEMINI_API_KEY');
+  }
 
+  const PDF_MODEL = 'gemini-1.5-pro';
+  const apiUrl = `https://generativelanguage.googleapis.com/v1/models/${PDF_MODEL}:generateContent?key=${API_KEY}`;
+  console.log(`Calling Gemini Pro PDF API: https://generativelanguage.googleapis.com/v1/models/${PDF_MODEL}:generateContent`);
+
+  const response = await fetch(apiUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{
+        parts: [
+          { text: prompt },
+          {
+            inline_data: {
+              mime_type: 'application/pdf',
+              data: pdfBase64
+            }
+          }
+        ]
+      }]
+    }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    console.error('Gemini PDF API Error:', errorData);
+    const apiErrorMsg = errorData?.error?.message || response.statusText;
+    throw new Error(`Gemini API Error: ${response.status} - ${apiErrorMsg}`);
+  }
+
+  const data = await response.json();
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  if (!text) {
+    throw new Error('Empty response from Gemini PDF');
+  }
+
+  return text;
+}
+/**
+ * Smart Scan - Automatically chooses the best provider based on file type.
+ * Images -> Groq (Llama 4 Scout) for speed.
+ * PDFs -> Gemini (1.5 Flash) for native document support.
+ */
+export async function smartScan(prompt, base64, mimeType) {
+  if (mimeType === 'application/pdf') {
+    return callGeminiPdf(prompt, base64);
+  } else {
+    return callGroqVision(prompt, base64, mimeType);
+  }
+}
