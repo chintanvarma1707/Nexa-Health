@@ -7,4 +7,5 @@ passlib[bcrypt]
 clerk-backend-api
 python-dotenv
 psycopg2-binary
+PyJWT
 

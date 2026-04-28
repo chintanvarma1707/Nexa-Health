@@ -274,35 +274,64 @@ const NearbyHelp = ({ selectedLanguage, location, condition }) => {
           node["amenity"="clinic"](around:${radius},${internalLocation.lat},${internalLocation.lon});
         );
         out center tags;`;
-      try {
-        // Using a more reliable Overpass API server with better CORS support
-        const resp = await fetch('https://overpass.kumi.systems/api/interpreter', {
-          method: 'POST', body: query,
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-        });
-        const data = await resp.json();
-        const results = data.elements.map((el) => {
-          const lat = el.lat || (el.center?.lat);
-          const lon = el.lon || (el.center?.lon);
-          const name = el.tags?.name || 'Unnamed Facility';
-          const opening = el.tags?.opening_hours || null;
-          const phone = el.tags?.phone || el.tags?.['contact:phone'] || null;
-          const distNum = lat && lon ? haversineDistance(internalLocation.lat, internalLocation.lon, lat, lon) : 999;
-          return {
-            id: el.id, name, lat, lon,
-            distance: distNum < 999 ? `${distNum.toFixed(2)} km` : 'N/A',
-            distanceNum: distNum,
-            open: opening?.includes('24/7') ? true : opening ? null : null,
-            type: el.tags?.amenity === 'clinic' ? 'Clinic' : 'Hospital',
-            phone,
-          };
-        }).sort((a, b) => a.distanceNum - b.distanceNum);
-        setHospitals(results);
-      } catch (e) {
-        setError('Failed to fetch nearby hospitals. Please try again.');
-      } finally {
-        setLoading(false);
+
+      const endpoints = [
+        'https://overpass-api.de/api/interpreter',
+        'https://lz4.overpass-api.de/api/interpreter',
+        'https://overpass.kumi.systems/api/interpreter',
+        'https://z.overpass-api.de/api/interpreter'
+      ];
+
+      let lastError = null;
+      let success = false;
+
+      for (const endpoint of endpoints) {
+        try {
+          const resp = await fetch(endpoint, {
+            method: 'POST',
+            body: `data=${encodeURIComponent(query)}`,
+            headers: { 
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'Accept': 'application/json'
+            }
+          });
+
+          if (!resp.ok) throw new Error(`HTTP error! status: ${resp.status}`);
+          
+          const data = await resp.json();
+          if (!data.elements) throw new Error('Invalid data format received');
+
+          const results = data.elements.map((el) => {
+            const lat = el.lat || (el.center?.lat);
+            const lon = el.lon || (el.center?.lon);
+            const name = el.tags?.name || 'Unnamed Facility';
+            const opening = el.tags?.opening_hours || null;
+            const phone = el.tags?.phone || el.tags?.['contact:phone'] || null;
+            const distNum = lat && lon ? haversineDistance(internalLocation.lat, internalLocation.lon, lat, lon) : 999;
+            return {
+              id: el.id, name, lat, lon,
+              distance: distNum < 999 ? `${distNum.toFixed(2)} km` : 'N/A',
+              distanceNum: distNum,
+              open: opening?.includes('24/7') ? true : opening ? null : null,
+              type: el.tags?.amenity === 'clinic' ? 'Clinic' : 'Hospital',
+              phone,
+            };
+          }).sort((a, b) => a.distanceNum - b.distanceNum);
+          
+          setHospitals(results);
+          success = true;
+          break; // Exit loop on success
+        } catch (e) {
+          console.warn(`Failed to fetch from ${endpoint}:`, e.message);
+          lastError = e;
+          continue; // Try next endpoint
+        }
       }
+
+      if (!success) {
+        setError('Failed to fetch nearby hospitals. All servers are currently busy or unavailable. Please try again in a few moments.');
+      }
+      setLoading(false);
     };
     fetchHospitals();
   }, [internalLocation]);

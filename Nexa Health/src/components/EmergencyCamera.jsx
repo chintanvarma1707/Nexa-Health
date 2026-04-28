@@ -4,7 +4,7 @@ import * as poseDetection from '@tensorflow-models/pose-detection';
 import '@tensorflow/tfjs-backend-webgl';
 import { Camera, Upload, AlertTriangle, ShieldCheck, X, Activity, Scan, Loader2, Image as ImageIcon, CheckCircle, RefreshCw, Key } from 'lucide-react';
 import { useTranslation } from '../utils/translations';
-import { callGroqVision, callGeminiVision } from '../utils/aiProviders';
+import { callGroqVision } from '../utils/aiProviders';
 import ReactMarkdown from 'react-markdown';
 import './EmergencyCamera.css';
 
